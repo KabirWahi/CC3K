@@ -28,7 +28,7 @@ class Game {
     void print(); // print displayGrid
     void update(); // update displayGrid
     Player *getPlayer(); // return player pointer
-    posn getStairs(); // return stairs position
+    Posn getStairs(); // return stairs position
     int getLevel(); // return level
     void init(); // initialize game
     void nextLevel(); // go to next level
