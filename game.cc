@@ -122,14 +122,26 @@ void Game::generateEnemies() {
 
 void Game::nextLevel() {
     level++;
+    for (int i = 0; i < enemies.size(); i++) {
+        delete enemies[i];
+    }
     enemies.clear();
+    for (int i = 0; i < items.size(); i++) {
+        delete items[i];
+    }
     items.clear();
     displayGrid = defaultMap;
     stairVisible = false;
     int HP = player->getHP();
+    int Gold = player->getGold();
+    bool hasBarrier = player->hasBarrier();
     delete player;
     init();
     player->setHP(HP);
+    player->setGold(Gold);
+    if (hasBarrier) {
+        player->toggleBarrier();
+    }
 }
 
 int Game::getLevel() {
