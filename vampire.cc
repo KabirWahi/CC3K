@@ -14,7 +14,7 @@ Vampire::Vampire(Posn p) {
 }
 
 void Vampire::attack(Character *target) {
-  int damage = ceil((100 / (100 + target->getDef())) * atk);
+  int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
   target->setHP(target->getHP() - damage);
   cout << symbol << " deals " << damage << " damage to PC and stole " << (damage / 5) << " HP from PC. ";
   // lifesteal

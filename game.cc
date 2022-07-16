@@ -130,10 +130,10 @@ void Game::play() {
             cout << "Invalid move" << endl;
             break;
           }
-        } else {
-          cout << "Invalid direction" << endl;
-          break;
         }
+      }
+      if (!validmove) {
+        cout << "Invalid direction" << endl;
       }
     }
     if (input == "q") {
@@ -150,6 +150,16 @@ void Game::update() {
   displayGrid = defaultMap;
   displayGrid[player->getPosition().row][player->getPosition().col] = '@';
   for (auto en : enemies) {
+    if (en->getHP() <= 0) {
+      enemies.erase(remove(enemies.begin(), enemies.end(), en), enemies.end());
+      continue;
+    }
+    for (int i = 0; i < 8; i++) {
+      Posn enemyattack = Posn{en->getPosition().row + r[i], en->getPosition().col + c[i]};
+      if (enemyattack == player->getPosition()) {
+        en->attack(player);
+      }
+    }
     bool moved = false;
     int di = randomNum(8);
     while (!moved) {
@@ -162,6 +172,7 @@ void Game::update() {
     }
     displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
   }
+  cout << endl;
 }
 
 void Game::generatePlayer(char symbol) {
