@@ -1,20 +1,26 @@
 #include "game.h"
+
 #include <time.h>
-#include <iostream>
-#include <string>
+
 #include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <random>
 #include <stdexcept>
+#include <string>
 #include <vector>
+
 #include "chars.h"
 using namespace std;
+
+const string movement[8] = {"no", "so", "ea", "we", "ne", "nw", "se", "sw"};
+const int r[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
+const int c[8] = {0, 0, 1, -1, 1, -1, 1, -1};
 
 int randomNum(int upperBound) {
   std::vector<int> v;
   for (int i = 0; i < upperBound; i++) {
-	v.push_back(i);
+    v.push_back(i);
   }
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine rng{seed};
@@ -85,7 +91,7 @@ void Game::init() {
 Posn Game::randomPosn(int chamber) {
   int row = randomNum(25);
   int col = randomNum(79);
-  while (displayGrid[row][col] != '.') { // || getChamber(Posn{row, col}) != chamber) {
+  while (displayGrid[row][col] != '.') {  // || getChamber(Posn{row, col}) != chamber) {
     row = randomNum(25);
     col = randomNum(79);
   }
@@ -95,6 +101,67 @@ Posn Game::randomPosn(int chamber) {
 void Game::play() {
   init();
   print();
+  string input;
+  while (cin >> input) {
+    bool validmove = false;
+    for (int i = 0; i < 8; i++) {
+      if (input == movement[i]) {
+        if (displayGrid[player->getPosition().row + r[i]][player->getPosition().col + c[i]] == '.') {
+          validmove = true;
+          player->setPosition(Posn{player->getPosition().row + r[i], player->getPosition().col + c[i]});
+          break;
+        }
+      }
+    }
+    if (input == "a") {
+      string di;
+      cin >> di;
+      for (int i = 0; i < 8; i++) {
+        if (di == movement[i]) {
+          Posn enemypos = Posn{player->getPosition().row + r[i], player->getPosition().col + c[i]};
+          for (auto en : enemies) {
+            if (enemypos == en->getPosition()) {
+              player->attack(en);
+              validmove = true;
+              break;
+            }
+          }
+          if (!validmove) {
+            cout << "Invalid move" << endl;
+            break;
+          }
+        } else {
+          cout << "Invalid direction" << endl;
+          break;
+        }
+      }
+    }
+    if (input == "q") {
+      break;
+    }
+    if (validmove) {
+      update();
+      print();
+    }
+  }
+}
+
+void Game::update() {
+  displayGrid = defaultMap;
+  displayGrid[player->getPosition().row][player->getPosition().col] = '@';
+  for (auto en : enemies) {
+    bool moved = false;
+    int di = randomNum(8);
+    while (!moved) {
+      if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
+        en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
+        moved = true;
+      } else {
+        di = randomNum(8);
+      }
+    }
+    displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+  }
 }
 
 void Game::generatePlayer(char symbol) {

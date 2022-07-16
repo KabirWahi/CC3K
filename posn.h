@@ -5,6 +5,9 @@ class Posn {
     public:
     int row;
     int col;
+    bool operator==(const Posn &other) {
+        return row == other.row && col == other.col;
+    }
 };
 
 #endif // POSN_H
