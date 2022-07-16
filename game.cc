@@ -16,6 +16,7 @@ using namespace std;
 const string movement[8] = {"no", "so", "ea", "we", "ne", "nw", "se", "sw"};
 const int r[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
 const int c[8] = {0, 0, 1, -1, 1, -1, 1, -1};
+const string directions[8] = {"North", "South", "East", "West", "Northeast", "Northwest", "Southeast", "Southwest"};
 
 int randomNum(int upperBound) {
   std::vector<int> v;
@@ -101,7 +102,9 @@ Posn Game::randomPosn(int chamber) {
 void Game::play() {
   init();
   print();
+  cout << "PC has spawned in the dungeon." << endl;
   string input;
+  string msg = "";
   while (cin >> input) {
     bool validmove = false;
     for (int i = 0; i < 8; i++) {
@@ -109,6 +112,7 @@ void Game::play() {
         if (displayGrid[player->getPosition().row + r[i]][player->getPosition().col + c[i]] == '.') {
           validmove = true;
           player->setPosition(Posn{player->getPosition().row + r[i], player->getPosition().col + c[i]});
+          msg = "You moved " + directions[i] + ". ";
           break;
         }
       }
@@ -121,7 +125,10 @@ void Game::play() {
           Posn enemypos = Posn{player->getPosition().row + r[i], player->getPosition().col + c[i]};
           for (auto en : enemies) {
             if (enemypos == en->getPosition()) {
+              int oldHP = en->getHP();
               player->attack(en);
+              int damage = oldHP - en->getHP();
+              msg = "PC deals " + to_string(damage) + " damage to " + en->getSymbol() + ". ";
               validmove = true;
               break;
             }
@@ -140,16 +147,20 @@ void Game::play() {
       break;
     }
     if (validmove) {
-      update();
+      msg = msg + update();
       print();
+      cout << msg << endl;
     }
   }
 }
 
-void Game::update() {
+string Game::update() {
+  string msg = "";
   displayGrid = defaultMap;
   displayGrid[player->getPosition().row][player->getPosition().col] = '@';
   for (auto en : enemies) {
+    bool moved = false;
+    bool attacked = false;
     if (en->getHP() <= 0) {
       enemies.erase(remove(enemies.begin(), enemies.end(), en), enemies.end());
       continue;
@@ -157,10 +168,19 @@ void Game::update() {
     for (int i = 0; i < 8; i++) {
       Posn enemyattack = Posn{en->getPosition().row + r[i], en->getPosition().col + c[i]};
       if (enemyattack == player->getPosition()) {
+        int oldHP = player->getHP();
         en->attack(player);
+        if (oldHP != player->getHP()) {
+          int damage = oldHP - player->getHP();
+          msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+        }
+        attacked = true;
       }
     }
-    bool moved = false;
+    if (attacked) {
+      displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+      continue;
+    }
     int di = randomNum(8);
     while (!moved) {
       if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
@@ -172,7 +192,7 @@ void Game::update() {
     }
     displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
   }
-  cout << endl;
+  return msg;
 }
 
 void Game::generatePlayer(char symbol) {
@@ -270,6 +290,11 @@ void Game::print() {
     }
     cout << endl;
   }
+  cout << "Race: " << player->getRace() << " Gold: " << player->getGold() << endl;
+  cout << "HP: " << player->getHP() << endl;
+  cout << "Atk: " << player->getAtk() << endl;
+  cout << "Def: " << player->getDef() << endl;
+  cout << "Action: ";
 }
 
 Game::~Game() {
