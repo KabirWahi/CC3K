@@ -1,7 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 #include <vector>
+#include "player.h"
+#include "enemy.h"
 #include "posn.h"
+#include "item.h"
 
 
 class Game {
@@ -16,12 +19,12 @@ class Game {
     void generatePlayer(char symbol); // generate player
     void generateEnemies(); // generate enemies and add to vector enemies
     void generateItems(); // generate items and add to vector items
-
+    Posn randomPosn(int chamber); // generate random valid posn
     public:
     std::vector<std::vector<char>> defaultMap;
     std::vector<std::vector<char>> displayGrid;
     char playerSymbol;
-
+    int getChamber(Posn posn); // get chamber number of player
     Game(char playerSymbol); // constructor
     ~Game(); // destructor
     void play(); // play game
