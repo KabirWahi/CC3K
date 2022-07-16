@@ -95,7 +95,6 @@ Posn Game::randomPosn(int chamber) {
 void Game::play() {
   init();
   print();
-  cout << barrierFloor << endl;
 }
 
 void Game::generatePlayer(char symbol) {
