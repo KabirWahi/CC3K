@@ -9,6 +9,7 @@ Human::Human(Posn p) {
   HP = maxHP;
   gold = 0;
   position = p;
+  race = "Human";
 }
 
 void Human::attack(Character *target) {

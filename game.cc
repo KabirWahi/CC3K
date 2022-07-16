@@ -1,172 +1,221 @@
 #include "game.h"
-#include "chars.h"
-#include <string>
+#include <time.h>
 #include <iostream>
-using namespace std; 
+#include <string>
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <random>
+#include <stdexcept>
+#include <vector>
+#include "chars.h"
+using namespace std;
 
-Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1), stairVisible(false), barrierFloor{rand() % 5 + 1} {
-    string map[25] = {"|-----------------------------------------------------------------------------|",
-                      "|                                                                             |",
-                      "| |--------------------------|        |-----------------------|               |",
-                      "| |..........................|        |.......................|               |",
-                      "| |..........................+########+.......................|-------|       |",
-                      "| |..........................|   #    |...............................|--|    |",
-                      "| |..........................|   #    |..................................|--| |",
-                      "| |----------+---------------|   #    |----+----------------|...............| |",
-                      "|            #                 #############                |...............| |",
-                      "|            #                 #     |-----+------|         |...............| |",
-                      "|            #                 #     |............|         |...............| |",
-                      "|            ###################     |............|   ######+...............| |",
-                      "|            #                 #     |............|   #     |...............| |",
-                      "|            #                 #     |-----+------|   #     |--------+------| |",
-                      "|  |---------+-----------|     #           #          #              #        |",
-                      "|  |.....................|     #           #          #         |----+------| |",
-                      "|  |.....................|     ########################         |...........| |",
-                      "|  |.....................|     #           #                    |...........| |",
-                      "|  |.....................|     #    |------+--------------------|...........| |",
-                      "|  |.....................|     #    |.......................................| |",
-                      "|  |.....................+##########+.......................................| |",
-                      "|  |.....................|          |.......................................| |",
-                      "|  |---------------------|          |---------------------------------------| |",
-                      "|                                                                             |",
-                      "|-----------------------------------------------------------------------------|"};
-    for (int i = 0; i < 25; i++) {
-        defaultMap.push_back(vector<char>());
-        for (int j = 0; j < 80; j++) {
-            defaultMap[i].push_back(map[i][j]);
-        }
-    }
-    displayGrid = defaultMap;
-    init();
+int randomNum(int upperBound) {
+  std::vector<int> v;
+  for (int i = 0; i < upperBound; i++) {
+	v.push_back(i);
+  }
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::default_random_engine rng{seed};
+  std::shuffle(v.begin(), v.end(), rng);
+  return v[0];
 }
 
+Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1), stairVisible(false), barrierFloor{randomNum(5) + 1} {
+  string map[25] = {"|-----------------------------------------------------------------------------|",
+                    "|                                                                             |",
+                    "| |--------------------------|        |-----------------------|               |",
+                    "| |..........................|        |.......................|               |",
+                    "| |..........................+########+.......................|-------|       |",
+                    "| |..........................|   #    |...............................|--|    |",
+                    "| |..........................|   #    |..................................|--| |",
+                    "| |----------+---------------|   #    |----+----------------|...............| |",
+                    "|            #                 #############                |...............| |",
+                    "|            #                 #     |-----+------|         |...............| |",
+                    "|            #                 #     |............|         |...............| |",
+                    "|            ###################     |............|   ######+...............| |",
+                    "|            #                 #     |............|   #     |...............| |",
+                    "|            #                 #     |-----+------|   #     |--------+------| |",
+                    "|  |---------+-----------|     #           #          #              #        |",
+                    "|  |.....................|     #           #          #         |----+------| |",
+                    "|  |.....................|     ########################         |...........| |",
+                    "|  |.....................|     #           #                    |...........| |",
+                    "|  |.....................|     #    |------+--------------------|...........| |",
+                    "|  |.....................|     #    |.......................................| |",
+                    "|  |.....................+##########+.......................................| |",
+                    "|  |.....................|          |.......................................| |",
+                    "|  |---------------------|          |---------------------------------------| |",
+                    "|                                                                             |",
+                    "|-----------------------------------------------------------------------------|"};
+  for (int i = 0; i < 25; i++) {
+    defaultMap.push_back(vector<char>());
+    for (int j = 0; j < 79; j++) {
+      defaultMap[i].push_back(map[i][j]);
+    }
+  }
+  displayGrid = defaultMap;
+}
 
 void Game::init() {
-    generatePlayer(playerSymbol);
-    int row = 0;
-    int col = 0;
-    int chamber = rand() % 5 + 1;
-    while (chamber == getChamber(player->getPosition())) {
-        chamber = rand() % 5 + 1;
-    }
-    while (displayGrid[row][col] != '.' || getChamber(Posn{row, col}) != chamber) {
-        row = rand() % 25;
-        col = rand() % 80;
-    }
-    stairPosition = Posn{row, col};
-    displayGrid[row][col] = '\\';
-    if (getLevel() == barrierFloor) {
-        int chamber = rand() % 5 + 1;
-        Posn posn = randomPosn(chamber);
-        displayGrid[posn.row][posn.col] = 'B';
-        // Add dragon code here
-    }
-    generateItems();
-    generateEnemies();
-    displayGrid[row][col] = '.';
+  generatePlayer(playerSymbol);
+  int row = 0;
+  int col = 0;
+  int chamber = randomNum(5) + 1;
+  while (chamber == getChamber(player->getPosition())) {
+    chamber = randomNum(5) + 1;
+  }
+  while (displayGrid[row][col] != '.' || getChamber(Posn{row, col}) != chamber) {
+    row = randomNum(25);
+    col = randomNum(79);
+  }
+  stairPosition = Posn{row, col};
+  displayGrid[row][col] = '\\';
+  if (getLevel() == barrierFloor) {
+    int chamber = randomNum(5) + 1;
+    Posn posn = randomPosn(chamber);
+    displayGrid[posn.row][posn.col] = 'B';
+    // Add dragon code here
+  }
+  // generateItems();
+  generateEnemies();
+  displayGrid[row][col] = '.';
 }
 
 Posn Game::randomPosn(int chamber) {
-    int row = rand() % 25;
-    int col = rand() % 80;
-    while (displayGrid[row][col] != '.' || getChamber(Posn{row, col}) != chamber) {
-        row = rand() % 25;
-        col = rand() % 80;
-    }
-    return Posn{row, col};
+  int row = randomNum(25);
+  int col = randomNum(79);
+  while (displayGrid[row][col] != '.') { // || getChamber(Posn{row, col}) != chamber) {
+    row = randomNum(25);
+    col = randomNum(79);
+  }
+  return Posn{row, col};
 }
 
+void Game::play() {
+  init();
+  print();
+  cout << barrierFloor << endl;
+}
 
 void Game::generatePlayer(char symbol) {
-    int chamber = rand() % 5 + 1;
-    Posn posn = randomPosn(chamber);
-    player = new Human(posn);
-    /*
-    if (playerSymbol == 'h') {
-        player = new Human(posn);
-    } else if (playerSymbol == 'd') {
-        player = new Dwarf(posn);
-    } else if (playerSymbol == 'e') {
-        player = new Elf(posn);
-    } else {
-        player = new Orc(posn);
-    }
-    */
-    displayGrid[posn.row][posn.col] = '@';
+  int chamber = randomNum(5) + 1;
+  Posn posn = randomPosn(chamber);
+  player = new Human(posn);
+  /*
+  if (playerSymbol == 'h') {
+      player = new Human(posn);
+  } else if (playerSymbol == 'd') {
+      player = new Dwarf(posn);
+  } else if (playerSymbol == 'e') {
+      player = new Elf(posn);
+  } else {
+      player = new Orc(posn);
+  }
+  */
+  displayGrid[posn.row][posn.col] = '@';
 }
 
 void Game::generateEnemies() {
-    for (int i = 0; i < 20 - enemies.size(); i++) {
-        int chamber = rand() % 5 + 1;
-        Posn posn = randomPosn(chamber);
-        /*
-        int type = rand() % 18; // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
-        if (type < 4) { // 14 - 15 Pheonix, 16 - 17 Merchant
-            enemies.push_back(new Werewolf(posn));
-            displayGrid[posn.row][posn.col] = 'W';
-        } else if (type < 6) {
-            enemies.push_back(new Vampire(posn));
-            displayGrid[posn.row][posn.col] = 'V';
-        } else if (type < 11) {
-            enemies.push_back(new Goblin(posn));
-            displayGrid[posn.row][posn.col] = 'N';
-        } else if (type < 13) {
-            enemies.push_back(new Troll(posn));
-            displayGrid[posn.row][posn.col] = 'T';
-        } else if (type < 14) {
-            enemies.push_back(new Phoenix(posn));
-            displayGrid[posn.row][posn.col] = 'X'; 
-        } else {
-            enemies.push_back(new Merchant(posn));
-            displayGrid[posn.row][posn.col] = 'M';
-        }
-        */
+  int numEnemies = 20 - enemies.size();
+  for (int i = 0; i < numEnemies; i++) {
+    int chamber = randomNum(5) + 1;
+    Posn posn = randomPosn(chamber);
+    enemies.push_back(new Vampire(posn));
+    displayGrid[posn.row][posn.col] = 'V';
+    /*
+    int type = rand() % 18; // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
+    if (type < 4) { // 14 - 15 Pheonix, 16 - 17 Merchant
+        enemies.push_back(new Werewolf(posn));
+        displayGrid[posn.row][posn.col] = 'W';
+    } else if (type < 6) {
+        enemies.push_back(new Vampire(posn));
+        displayGrid[posn.row][posn.col] = 'V';
+    } else if (type < 11) {
+        enemies.push_back(new Goblin(posn));
+        displayGrid[posn.row][posn.col] = 'N';
+    } else if (type < 13) {
+        enemies.push_back(new Troll(posn));
+        displayGrid[posn.row][posn.col] = 'T';
+    } else if (type < 14) {
+        enemies.push_back(new Phoenix(posn));
+        displayGrid[posn.row][posn.col] = 'X';
+    } else {
+        enemies.push_back(new Merchant(posn));
+        displayGrid[posn.row][posn.col] = 'M';
     }
-    int compassHolder = rand() % 20;
-    enemies[compassHolder]->compass = true;
+    */
+  }
+  int compassHolder = randomNum(20);
+  enemies[compassHolder]->compass = true;
 }
 
 void Game::nextLevel() {
-    level++;
-    for (int i = 0; i < enemies.size(); i++) {
-        delete enemies[i];
-    }
-    enemies.clear();
-    for (int i = 0; i < items.size(); i++) {
-        delete items[i];
-    }
-    items.clear();
-    displayGrid = defaultMap;
-    stairVisible = false;
-    int HP = player->getHP();
-    int Gold = player->getGold();
-    bool hasBarrier = player->hasBarrier();
-    delete player;
-    init();
-    player->setHP(HP);
-    player->setGold(Gold);
-    if (hasBarrier) {
-        player->toggleBarrier();
-    }
+  level++;
+  for (int i = 0; i < enemies.size(); i++) {
+    delete enemies[i];
+  }
+  enemies.clear();
+  for (int i = 0; i < items.size(); i++) {
+    delete items[i];
+  }
+  items.clear();
+  displayGrid = defaultMap;
+  stairVisible = false;
+  int HP = player->getHP();
+  int Gold = player->getGold();
+  bool hasBarrier = player->hasBarrier();
+  delete player;
+  init();
+  player->setHP(HP);
+  player->setGold(Gold);
+  if (hasBarrier) {
+    player->toggleBarrier();
+  }
 }
 
 int Game::getLevel() {
-    return level;
+  return level;
 }
 
 Player* Game::getPlayer() {
-    return player;
+  return player;
 }
 
 Posn Game::getStairs() {
-    return stairPosition;
+  return stairPosition;
 }
 
 void Game::print() {
-    for (int i = 0; i < 25; i++) {
-        for (int j = 0; j < 80; j++) {
-            cout << displayGrid[i][j];
-        }
-        cout << endl;
+  for (int i = 0; i < 25; i++) {
+    for (int j = 0; j < 79; j++) {
+      cout << displayGrid[i][j];
     }
+    cout << endl;
+  }
+}
+
+Game::~Game() {
+  for (int i = 0; i < enemies.size(); i++) {
+    delete enemies[i];
+  }
+  for (int i = 0; i < items.size(); i++) {
+    delete items[i];
+  }
+  delete player;
+}
+
+int Game::getChamber(Posn p) {
+  /*
+  int x = p.row;
+  int y = p.col;
+  // get chamber from x and y from defaultGrid
+  if (x >= 3 && x <= 6 && y >= 3 && y <= 28) {
+    return 1;
+  } else return 2;
+  */
+  return randomNum(5) + 1;
+}
+
+void Game::generateItems() {
 }

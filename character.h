@@ -1,5 +1,8 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
+#include <math.h>
+#include <string>
+
 #include "posn.h"
 
 class Character {
