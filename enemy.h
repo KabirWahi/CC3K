@@ -3,8 +3,9 @@
 #include "character.h"
 
 class Enemy {
-    public:
-    bool compass = false;
+ public:
+  bool compass = false;
+  char getSymbol();
 };
 
-#endif // ENEMY_H
+#endif  // ENEMY_H

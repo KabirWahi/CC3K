@@ -1,4 +1,5 @@
 #include "game.h"
+#include "chars.h"
 #include <string>
 #include <iostream>
 using namespace std; 
@@ -79,6 +80,8 @@ Posn Game::randomPosn(int chamber) {
 void Game::generatePlayer(char symbol) {
     int chamber = rand() % 5 + 1;
     Posn posn = randomPosn(chamber);
+    player = new Human(posn);
+    /*
     if (playerSymbol == 'h') {
         player = new Human(posn);
     } else if (playerSymbol == 'd') {
@@ -88,6 +91,7 @@ void Game::generatePlayer(char symbol) {
     } else {
         player = new Orc(posn);
     }
+    */
     displayGrid[posn.row][posn.col] = '@';
 }
 
@@ -95,6 +99,7 @@ void Game::generateEnemies() {
     for (int i = 0; i < 20 - enemies.size(); i++) {
         int chamber = rand() % 5 + 1;
         Posn posn = randomPosn(chamber);
+        /*
         int type = rand() % 18; // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
         if (type < 4) { // 14 - 15 Pheonix, 16 - 17 Merchant
             enemies.push_back(new Werewolf(posn));
@@ -115,6 +120,7 @@ void Game::generateEnemies() {
             enemies.push_back(new Merchant(posn));
             displayGrid[posn.row][posn.col] = 'M';
         }
+        */
     }
     int compassHolder = rand() % 20;
     enemies[compassHolder]->compass = true;
@@ -164,4 +170,3 @@ void Game::print() {
         cout << endl;
     }
 }
-
