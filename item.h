@@ -6,12 +6,17 @@ class Item {
     protected:
     char symbol;
     Posn position;
+    int value;  
     bool guarded;
 
     public:
-    void getSymbol(); // return symbol
+    Item(char symbol, Posn position);
+    virtual ~Item() = 0;
+    char getSymbol(); // return symbol
     Posn getPosition(); // return position
-    bool isGuarded(); // for a DragonHoard, if it is guarded by a dragon
+    int getValue(); // return value
+    virtual bool isGuarded(); // for a DragonHoard/BarrierSuit, if it is guarded by a dragon
+    virtual void setGuarded(); // for a DragonHoard/BarrierSuit, set false if the dragon is dead
 
 };
 
