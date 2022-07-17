@@ -7,7 +7,7 @@ class Gold: public Item {
     protected:
     std::string name;
     public:
-    Gold(char symbol, Posn position, std::string name, int value);
+    Gold(Posn position, std::string name);
     ~Gold();
 };
 
