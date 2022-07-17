@@ -2,7 +2,6 @@
 #define GAME_H
 #include <string>
 #include <vector>
-
 #include "enemy.h"
 #include "item.h"
 #include "player.h"
