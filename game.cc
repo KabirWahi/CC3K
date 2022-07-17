@@ -86,7 +86,7 @@ void Game::init() {
   }
   // generateItems();
   generateEnemies();
-  displayGrid[row][col] = '.';
+  // displayGrid[row][col] = '.';
 }
 
 Posn Game::randomPosn(int chamber) {
@@ -106,11 +106,14 @@ void Game::play() {
   string input;
   string msg = "";
   while (cin >> input) {
-    bool validmove = false;
+    bool valid = false;
+    bool moved = false;
     for (int i = 0; i < 8; i++) {
       if (input == movement[i]) {
-        if (displayGrid[player->getPosition().row + r[i]][player->getPosition().col + c[i]] == '.') {
-          validmove = true;
+        valid = true;
+        char tmp = displayGrid[player->getPosition().row + r[i]][player->getPosition().col + c[i]];
+        if (tmp == '.' || tmp == '+' || tmp == '#') {
+          moved = true;
           player->setPosition(Posn{player->getPosition().row + r[i], player->getPosition().col + c[i]});
           msg = "You moved " + directions[i] + ". ";
           break;
@@ -118,6 +121,7 @@ void Game::play() {
       }
     }
     if (input == "a") {
+      valid = true;
       string di;
       cin >> di;
       for (int i = 0; i < 8; i++) {
@@ -129,28 +133,24 @@ void Game::play() {
               player->attack(en);
               int damage = oldHP - en->getHP();
               msg = "PC deals " + to_string(damage) + " damage to " + en->getSymbol() + ". ";
-              validmove = true;
+              moved = true;
               break;
             }
           }
-          if (!validmove) {
-            cout << "Invalid move" << endl;
-            break;
-          }
         }
-      }
-      if (!validmove) {
-        cout << "Invalid direction" << endl;
       }
     }
     if (input == "q") {
       break;
     }
-    if (validmove) {
-      msg = msg + update();
+    if (!valid || !moved) {
       print();
-      cout << msg << endl;
+      cout << "Invalid move." << endl;
+      continue;
     }
+    msg = msg + update();
+    print();
+    cout << msg << endl;
   }
 }
 
