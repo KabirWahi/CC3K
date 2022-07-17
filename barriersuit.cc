@@ -8,10 +8,6 @@ BarrierSuit::BarrierSuit(Posn position): Item{'B', position} {
 
 BarrierSuit::~BarrierSuit() {}
 
-bool BarrierSuit::isGuarded() {
-    return guarded;
-}
-
 void BarrierSuit::setGuarded() {
     guarded = false;
 }
