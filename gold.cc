@@ -4,8 +4,16 @@
 #include <string>
 using namespace std;
 
-Gold::Gold(char symbol, Posn position, string name, int value): Item{symbol, position}, name{name} {
-    this->value = value;
+Gold::Gold(Posn position, string name): Item{'G', position}, name{name} {
+    if (name == "Normal") {
+        value = 1;
+    } else if (name == "SmallHoard") {
+        value = 2;
+    } else if (name == "MerchantHoard") {
+        value = 4;
+    } else {
+        value = 0;
+    }
 }
 
 Gold::~Gold() {}
