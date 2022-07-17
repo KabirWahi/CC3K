@@ -338,7 +338,7 @@ void Game::generateItems() {
     for (int i = 0; i < numPotions; i++) {
         int chamber = randomNum(5) + 1;
         Posn posn = randomPosn(chamber);
-        while (defaultMap[posn,row][posn.col] != '-') {
+        while (defaultMap[posn.row][posn.col] != '-') {
             posn = randomPosn(chamber);
         }
         int type = rand() % 6; // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
@@ -350,7 +350,7 @@ void Game::generateItems() {
     for (int i = 0; i < numGolds; i++) {
         int chamber = randomNum(5) + 1;
         Posn posn = randomPosn(chamber);
-        while (defaultMap[posn,row][posn.col] != '-') {
+        while (defaultMap[posn.row][posn.col] != '-') {
             posn = randomPosn(chamber);
         }
         int type = rand() % 8; // 0-4 normal gold,  5-6 small hoard, 7 dragon hoard
