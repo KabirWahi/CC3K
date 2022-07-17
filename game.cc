@@ -16,8 +16,8 @@ using namespace std;
 const string movement[8] = {"no", "so", "ea", "we", "ne", "nw", "se", "sw"};
 const int r[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
 const int c[8] = {0, 0, 1, -1, 1, -1, 1, -1};
-const string directions[8] = {"North",     "South",     "East",
-                              "West",      "Northeast", "Northwest",
+const string directions[8] = {"North", "South", "East",
+                              "West", "Northeast", "Northwest",
                               "Southeast", "Southwest"};
 
 int randomNum(int upperBound) {
@@ -233,16 +233,14 @@ string Game::update() {
     }
     int di = randomNum(8);
     while (!moved) {
-      if (displayGrid[en->getPosition().row + r[di]]
-                     [en->getPosition().col + c[di]] == '.') {
-        en->setPosition(
-            Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
+      if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
+        en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
         moved = true;
+        displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
       } else {
         di = randomNum(8);
       }
     }
-    displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
   }
   return msg;
 }
