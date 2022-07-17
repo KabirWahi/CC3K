@@ -8,6 +8,7 @@ class Werewolf : public Enemy {
   void attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
+  bool hasBarrier() const override { return false; };
 };
 
-#endif // WERE_WOLF_H
+#endif  // WERE_WOLF_H

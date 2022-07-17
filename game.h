@@ -34,6 +34,7 @@ class Game {
   int getLevel();             // return level
   void init();                // initialize game
   void nextLevel();           // go to next level
+  bool neighborHasPlayer(Posn posn); // return true if neighbor has player
 };
 
 #endif  // GAME_H

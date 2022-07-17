@@ -5,9 +5,9 @@
 using namespace std;
 
 Goblin::Goblin(Posn p) {
-  atk = 25;
-  def = 25;
-  HP = 50;
+  atk = 5;
+  def = 10;
+  HP = 70;
   gold = 1;
   position = p;
   symbol = 'N';
@@ -16,13 +16,12 @@ Goblin::Goblin(Posn p) {
 
 void Goblin::attack(Character *target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
+  if (target->hasBarrier()) {
+    damage = damage / 2;
+  }
   target->setHP(target->getHP() - damage);
 }
 
-int Goblin::getAtk() {
-  return atk;
-}
+int Goblin::getAtk() { return atk; }
 
-int Goblin::getDef() {
-  return def;
-}
+int Goblin::getDef() { return def; }

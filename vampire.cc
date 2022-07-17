@@ -16,13 +16,12 @@ Vampire::Vampire(Posn p) {
 
 void Vampire::attack(Character *target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
+  if (target->hasBarrier()) {
+    damage = damage / 2;
+  }
   target->setHP(target->getHP() - damage);
 }
 
-int Vampire::getAtk() {
-  return atk;
-}
+int Vampire::getAtk() { return atk; }
 
-int Vampire::getDef() {
-  return def;
-}
+int Vampire::getDef() { return def; }

@@ -8,6 +8,7 @@ class Troll : public Enemy {
   void attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
+  bool hasBarrier() const override { return false; };
 };
 
-#endif // TROLL_H
+#endif  // TROLL_H

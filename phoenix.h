@@ -8,6 +8,7 @@ class Phoenix : public Enemy {
   void attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
+  bool hasBarrier() const override { return false; };
 };
 
-#endif // PHOENIX_H
+#endif  // PHOENIX_H

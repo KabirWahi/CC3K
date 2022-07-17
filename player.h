@@ -12,7 +12,7 @@ class Player : public Character {
   virtual int getAtk() = 0;
   virtual int getDef() = 0;
   virtual void attack(Character *target) = 0;
-  bool hasBarrier();
+  virtual bool hasBarrier() const;
   void toggleBarrier();
 };
 

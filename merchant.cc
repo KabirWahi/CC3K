@@ -5,10 +5,10 @@
 using namespace std;
 
 Merchant::Merchant(Posn p) {
-  atk = 25;
-  def = 25;
-  HP = 50;
-  gold = 1;
+  atk = 70;
+  def = 5;
+  HP = 30;
+  gold = 0;
   position = p;
   symbol = 'M';
   race = "Merchant";
@@ -16,13 +16,12 @@ Merchant::Merchant(Posn p) {
 
 void Merchant::attack(Character *target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
+  if (target->hasBarrier()) {
+    damage = damage / 2;
+  }
   target->setHP(target->getHP() - damage);
 }
 
-int Merchant::getAtk() {
-  return atk;
-}
+int Merchant::getAtk() { return atk; }
 
-int Merchant::getDef() {
-  return def;
-}
+int Merchant::getDef() { return def; }

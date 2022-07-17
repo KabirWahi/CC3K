@@ -8,6 +8,7 @@ class Dragon : public Enemy {
   void attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
+  bool hasBarrier() const override { return false; };
 };
 
-#endif // DRAGON_H
+#endif  // DRAGON_H

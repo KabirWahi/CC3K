@@ -158,11 +158,11 @@ void Game::play() {
     }
     msg = msg + update();
     print();
+    cout << msg << endl;
     if (player->getHP() <= 0) {
-      cout << "You died :(" << endl;
+      cout << "You died :( " << endl;
       break;
     }
-    cout << msg << endl;
   }
 }
 
@@ -236,11 +236,23 @@ void Game::generatePlayer(char symbol) {
   displayGrid[posn.row][posn.col] = '@';
 }
 
+bool Game::neighborHasPlayer(Posn posn) {
+  for (int i = 0; i < 8; i++) {
+    if (displayGrid[posn.row + r[i]][posn.col + c[i]] == '@') {
+      return true;
+    }
+  }
+  return false;
+}
+
 void Game::generateEnemies() {
   int numEnemies = 20 - enemies.size();
   for (int i = 0; i < numEnemies; i++) {
     int chamber = randomNum(5) + 1;
     Posn posn = randomPosn(chamber);
+    while (neighborHasPlayer(posn)) {
+      posn = randomPosn(chamber);
+    }
     int type = rand() % 18; // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
     if (type < 4) { // 14 - 15 Pheonix, 16 - 17 Merchant
         enemies.push_back(new Werewolf(posn));
@@ -305,7 +317,7 @@ void Game::print() {
   }
   cout << "Race: " << player->getRace() << " Gold: " << player->getGold()
        << endl;
-  cout << "HP: " << player->getHP() << endl;
+  cout << "HP: " << max(0, player->getHP()) << endl;
   cout << "Atk: " << player->getAtk() << endl;
   cout << "Def: " << player->getDef() << endl;
   cout << "Action: ";

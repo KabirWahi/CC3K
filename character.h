@@ -31,6 +31,7 @@ class Character {
   void setGold(int gold);                      // set gold
   void setAtk(int atk);                        // set atk
   void setDef(int def);                        // set def
+  virtual bool hasBarrier() const = 0;         // return barrier
 };
 
 #endif  // CHARACTER_H

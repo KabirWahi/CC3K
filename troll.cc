@@ -6,8 +6,8 @@ using namespace std;
 
 Troll::Troll(Posn p) {
   atk = 25;
-  def = 25;
-  HP = 50;
+  def = 15;
+  HP = 120;
   gold = 1;
   position = p;
   symbol = 'T';
@@ -16,13 +16,12 @@ Troll::Troll(Posn p) {
 
 void Troll::attack(Character *target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
+  if (target->hasBarrier()) {
+    damage = damage / 2;
+  }
   target->setHP(target->getHP() - damage);
 }
 
-int Troll::getAtk() {
-  return atk;
-}
+int Troll::getAtk() { return atk; }
 
-int Troll::getDef() {
-  return def;
-}
+int Troll::getDef() { return def; }
