@@ -200,8 +200,7 @@ string Game::update() {
       }
     }
     if (attacked) {
-      displayGrid[en->getPosition().row][en->getPosition().col] =
-          en->getSymbol();
+      displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
       continue;
     }
     int di = randomNum(8);
@@ -209,7 +208,7 @@ string Game::update() {
       if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
         en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
         moved = true;
-        displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+        displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] = en->getSymbol();
       } else {
         di = randomNum(8);
       }
