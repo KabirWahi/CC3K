@@ -7,7 +7,7 @@ class Potion: public Item {
     protected:
     std::string name;
     public:
-    Potion(char symbol, Posn position, std::string name, int value);
+    Potion(Posn position, std::string name);
     ~Potion();
 };
 
