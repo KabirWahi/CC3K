@@ -141,8 +141,7 @@ void Game::play() {
               player->attack(en);
               int damage = oldHP - en->getHP();
               msg = "PC deals " + to_string(damage) + " damage to " +
-                    en->getSymbol() + " (" + to_string(max(0, en->getHP())) +
-                    " HP). ";
+                    en->getSymbol() + " (" + to_string(max(0, en->getHP())) + " HP). ";
               moved = true;
               break;
             }
@@ -169,8 +168,7 @@ void Game::play() {
 
 string Game::update() {
   string msg = "";
-  displayGrid = defaultMap;
-  displayGrid[player->getPosition().row][player->getPosition().col] = '@';
+  // displayGrid = defaultMap;
   for (auto en : enemies) {
     bool moved = false;
     bool attacked = false;
@@ -200,7 +198,6 @@ string Game::update() {
       }
     }
     if (attacked) {
-      displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
       continue;
     }
     int di = randomNum(8);
@@ -208,10 +205,14 @@ string Game::update() {
       if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
         en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
         moved = true;
-        displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] = en->getSymbol();
       } else {
         di = randomNum(8);
       }
+    }
+    displayGrid = defaultMap;
+    displayGrid[player->getPosition().row][player->getPosition().col] = '@';
+    for (auto en : enemies) {
+      displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
     }
   }
   return msg;

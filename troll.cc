@@ -17,7 +17,6 @@ Troll::Troll(Posn p) {
 void Troll::attack(Character *target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
   target->setHP(target->getHP() - damage);
-  cout << symbol << " deals " << damage << " damage to PC. ";
 }
 
 int Troll::getAtk() {

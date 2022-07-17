@@ -3,6 +3,8 @@
 #include "enemy.h"
 
 class Merchant : public Enemy {
+  protected:
+   static bool hostile;
  public:
   Merchant(Posn p);
   void attack(Character *target) override;

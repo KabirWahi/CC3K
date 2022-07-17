@@ -17,7 +17,6 @@ Dragon::Dragon(Posn p) {
 void Dragon::attack(Character *target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
   target->setHP(target->getHP() - damage);
-  cout << symbol << " deals " << damage << " damage to PC. ";
 }
 
 int Dragon::getAtk() {
