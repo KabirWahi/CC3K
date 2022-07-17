@@ -4,7 +4,7 @@
 
 class BarrierSuit: public Item {
     public:
-    BarrierSuit(char symbol, Posn position);
+    BarrierSuit(Posn position);
     ~BarrierSuit();
     bool isGuarded() override;
     void setGuarded() override;
