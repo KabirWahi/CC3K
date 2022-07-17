@@ -2,7 +2,7 @@
 #include "item.h"
 #include "posn.h"
 
-BarrierSuit::BarrierSuit(char symbol, Posn position): Item{symbol, position} {
+BarrierSuit::BarrierSuit(Posn position): Item{'B', position} {
     guarded = true;
 }
 
