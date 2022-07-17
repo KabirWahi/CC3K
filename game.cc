@@ -16,7 +16,9 @@ using namespace std;
 const string movement[8] = {"no", "so", "ea", "we", "ne", "nw", "se", "sw"};
 const int r[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
 const int c[8] = {0, 0, 1, -1, 1, -1, 1, -1};
-const string directions[8] = {"North", "South", "East", "West", "Northeast", "Northwest", "Southeast", "Southwest"};
+const string directions[8] = {"North",     "South",     "East",
+                              "West",      "Northeast", "Northwest",
+                              "Southeast", "Southwest"};
 
 int randomNum(int upperBound) {
   std::vector<int> v;
@@ -29,32 +31,63 @@ int randomNum(int upperBound) {
   return v[0];
 }
 
-Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1), stairVisible(false), barrierFloor{randomNum(5) + 1} {
-  string map[25] = {"|-----------------------------------------------------------------------------|",
-                    "|                                                                             |",
-                    "| |--------------------------|        |-----------------------|               |",
-                    "| |..........................|        |.......................|               |",
-                    "| |..........................+########+.......................|-------|       |",
-                    "| |..........................|   #    |...............................|--|    |",
-                    "| |..........................|   #    |..................................|--| |",
-                    "| |----------+---------------|   #    |----+----------------|...............| |",
-                    "|            #                 #############                |...............| |",
-                    "|            #                 #     |-----+------|         |...............| |",
-                    "|            #                 #     |............|         |...............| |",
-                    "|            ###################     |............|   ######+...............| |",
-                    "|            #                 #     |............|   #     |...............| |",
-                    "|            #                 #     |-----+------|   #     |--------+------| |",
-                    "|  |---------+-----------|     #           #          #              #        |",
-                    "|  |.....................|     #           #          #         |----+------| |",
-                    "|  |.....................|     ########################         |...........| |",
-                    "|  |.....................|     #           #                    |...........| |",
-                    "|  |.....................|     #    |------+--------------------|...........| |",
-                    "|  |.....................|     #    |.......................................| |",
-                    "|  |.....................+##########+.......................................| |",
-                    "|  |.....................|          |.......................................| |",
-                    "|  |---------------------|          |---------------------------------------| |",
-                    "|                                                                             |",
-                    "|-----------------------------------------------------------------------------|"};
+Game::Game(char playerSymbol)
+    : playerSymbol(playerSymbol),
+      level(1),
+      stairVisible(false),
+      barrierFloor{randomNum(5) + 1} {
+  string map[25] = {
+      "|-----------------------------------------------------------------------"
+      "------|",
+      "|                                                                       "
+      "      |",
+      "| |--------------------------|        |-----------------------|         "
+      "      |",
+      "| |..........................|        |.......................|         "
+      "      |",
+      "| |..........................+########+.......................|-------| "
+      "      |",
+      "| |..........................|   #    "
+      "|...............................|--|    |",
+      "| |..........................|   #    "
+      "|..................................|--| |",
+      "| |----------+---------------|   #    "
+      "|----+----------------|...............| |",
+      "|            #                 #############                "
+      "|...............| |",
+      "|            #                 #     |-----+------|         "
+      "|...............| |",
+      "|            #                 #     |............|         "
+      "|...............| |",
+      "|            ###################     |............|   "
+      "######+...............| |",
+      "|            #                 #     |............|   #     "
+      "|...............| |",
+      "|            #                 #     |-----+------|   #     "
+      "|--------+------| |",
+      "|  |---------+-----------|     #           #          #              #  "
+      "      |",
+      "|  |.....................|     #           #          #         "
+      "|----+------| |",
+      "|  |.....................|     ########################         "
+      "|...........| |",
+      "|  |.....................|     #           #                    "
+      "|...........| |",
+      "|  |.....................|     #    "
+      "|------+--------------------|...........| |",
+      "|  |.....................|     #    "
+      "|.......................................| |",
+      "|  "
+      "|.....................+##########+......................................"
+      ".| |",
+      "|  |.....................|          "
+      "|.......................................| |",
+      "|  |---------------------|          "
+      "|---------------------------------------| |",
+      "|                                                                       "
+      "      |",
+      "|-----------------------------------------------------------------------"
+      "------|"};
   for (int i = 0; i < 25; i++) {
     defaultMap.push_back(vector<char>());
     for (int j = 0; j < 79; j++) {
@@ -72,7 +105,8 @@ void Game::init() {
   while (chamber == player->getPosition().whichChamber()) {
     chamber = randomNum(5) + 1;
   }
-  while (displayGrid[row][col] != '.' || (Posn{row, col}).whichChamber() != chamber) {
+  while (displayGrid[row][col] != '.' ||
+         (Posn{row, col}).whichChamber() != chamber) {
     row = randomNum(25);
     col = randomNum(79);
   }
@@ -92,7 +126,8 @@ void Game::init() {
 Posn Game::randomPosn(int chamber) {
   int row = randomNum(25);
   int col = randomNum(79);
-  while (displayGrid[row][col] != '.' || (Posn{row, col}).whichChamber() != chamber) {
+  while (displayGrid[row][col] != '.' ||
+         (Posn{row, col}).whichChamber() != chamber) {
     row = randomNum(25);
     col = randomNum(79);
   }
@@ -109,10 +144,12 @@ void Game::play() {
     bool moved = false;
     for (int i = 0; i < 8; i++) {
       if (input == movement[i]) {
-        char tmp = displayGrid[player->getPosition().row + r[i]][player->getPosition().col + c[i]];
+        char tmp = displayGrid[player->getPosition().row + r[i]]
+                              [player->getPosition().col + c[i]];
         if (tmp == '.' || tmp == '+' || tmp == '#') {
           moved = true;
-          player->setPosition(Posn{player->getPosition().row + r[i], player->getPosition().col + c[i]});
+          player->setPosition(Posn{player->getPosition().row + r[i],
+                                   player->getPosition().col + c[i]});
           msg = "You moved " + directions[i] + ". ";
           break;
         }
@@ -123,13 +160,16 @@ void Game::play() {
       cin >> di;
       for (int i = 0; i < 8; i++) {
         if (di == movement[i]) {
-          Posn enemypos = Posn{player->getPosition().row + r[i], player->getPosition().col + c[i]};
+          Posn enemypos = Posn{player->getPosition().row + r[i],
+                               player->getPosition().col + c[i]};
           for (auto en : enemies) {
             if (enemypos == en->getPosition()) {
               int oldHP = en->getHP();
               player->attack(en);
               int damage = oldHP - en->getHP();
-              msg = "PC deals " + to_string(damage) + " damage to " + en->getSymbol() + " (" + to_string(max(0, en->getHP())) + " HP). ";
+              msg = "PC deals " + to_string(damage) + " damage to " +
+                    en->getSymbol() + " (" + to_string(max(0, en->getHP())) +
+                    " HP). ";
               moved = true;
               break;
             }
@@ -163,30 +203,40 @@ string Game::update() {
     bool attacked = false;
     if (en->getHP() <= 0) {
       player->setGold(player->getGold() + en->getGold());
-      msg = msg + "You slained " + (en->getSymbol()) + " and got " + to_string(en->getGold()) + " gold. ";
+      msg = msg + "You slained " + (en->getSymbol()) + " and got " +
+            to_string(en->getGold()) + " gold. ";
       enemies.erase(remove(enemies.begin(), enemies.end(), en), enemies.end());
       continue;
     }
     for (int i = 0; i < 8; i++) {
-      Posn enemyattack = Posn{en->getPosition().row + r[i], en->getPosition().col + c[i]};
+      Posn enemyattack =
+          Posn{en->getPosition().row + r[i], en->getPosition().col + c[i]};
       if (enemyattack == player->getPosition()) {
-        int oldHP = player->getHP();
-        en->attack(player);
-        if (oldHP != player->getHP()) {
-          int damage = oldHP - player->getHP();
-          msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+        int hit = randomNum(2);
+        if (hit == 1) {
+          int oldHP = player->getHP();
+          en->attack(player);
+          if (oldHP != player->getHP()) {
+            int damage = oldHP - player->getHP();
+            msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+          }
+        } else {
+          msg = msg + en->getSymbol() + " missed. ";
         }
         attacked = true;
       }
     }
     if (attacked) {
-      displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+      displayGrid[en->getPosition().row][en->getPosition().col] =
+          en->getSymbol();
       continue;
     }
     int di = randomNum(8);
     while (!moved) {
-      if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
-        en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
+      if (displayGrid[en->getPosition().row + r[di]]
+                     [en->getPosition().col + c[di]] == '.') {
+        en->setPosition(
+            Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
         moved = true;
       } else {
         di = randomNum(8);
@@ -223,8 +273,8 @@ void Game::generateEnemies() {
     enemies.push_back(new Vampire(posn));
     displayGrid[posn.row][posn.col] = 'V';
     /*
-    int type = rand() % 18; // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
-    if (type < 4) { // 14 - 15 Pheonix, 16 - 17 Merchant
+    int type = rand() % 18; // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12
+    - 13 Troll, if (type < 4) { // 14 - 15 Pheonix, 16 - 17 Merchant
         enemies.push_back(new Werewolf(posn));
         displayGrid[posn.row][posn.col] = 'W';
     } else if (type < 6) {
@@ -273,17 +323,11 @@ void Game::nextLevel() {
   }
 }
 
-int Game::getLevel() {
-  return level;
-}
+int Game::getLevel() { return level; }
 
-Player* Game::getPlayer() {
-  return player;
-}
+Player* Game::getPlayer() { return player; }
 
-Posn Game::getStairs() {
-  return stairPosition;
-}
+Posn Game::getStairs() { return stairPosition; }
 
 void Game::print() {
   for (int i = 0; i < 25; i++) {
@@ -292,7 +336,8 @@ void Game::print() {
     }
     cout << endl;
   }
-  cout << "Race: " << player->getRace() << " Gold: " << player->getGold() << endl;
+  cout << "Race: " << player->getRace() << " Gold: " << player->getGold()
+       << endl;
   cout << "HP: " << player->getHP() << endl;
   cout << "Atk: " << player->getAtk() << endl;
   cout << "Def: " << player->getDef() << endl;
@@ -309,5 +354,4 @@ Game::~Game() {
   delete player;
 }
 
-void Game::generateItems() {
-}
+void Game::generateItems() {}
