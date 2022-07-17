@@ -7,7 +7,6 @@ class DragonHoard: public Gold {
     public:
     DragonHoard(Posn position);
     ~DragonHoard();
-    bool isGuarded() override;
     void setGuarded() override;
 };
 
