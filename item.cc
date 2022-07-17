@@ -18,7 +18,7 @@ int Item::getValue() {
 }
     
 bool Item::isGuarded() {
-    return false;
+    return guarded;
 }
 
 void Item::setGuarded() {
