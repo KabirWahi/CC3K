@@ -333,4 +333,46 @@ Game::~Game() {
   delete player;
 }
 
-void Game::generateItems() {}
+void Game::generateItems() {
+    int numPotions = 10;
+    for (int i = 0; i < numPotions; i++) {
+        int chamber = randomNum(5) + 1;
+        Posn posn = randomPosn(chamber);
+        while (defaultMap[posn,row][posn.col] != '-') {
+            posn = randomPosn(chamber);
+        }
+        int type = rand() % 6; // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
+        items.push_back(new Potion('0'+type, posn));
+        defaultMap[posn.row][posn.col] = '0'+type;
+        displayGrid[posn.row][posn.col] = 'P';
+    }
+    int numGolds = 10;
+    for (int i = 0; i < numGolds; i++) {
+        int chamber = randomNum(5) + 1;
+        Posn posn = randomPosn(chamber);
+        while (defaultMap[posn,row][posn.col] != '-') {
+            posn = randomPosn(chamber);
+        }
+        int type = rand() % 8; // 0-4 normal gold,  5-6 small hoard, 7 dragon hoard
+        if (type <= 4) {
+            items.push_back(new Gold('6', posn));
+            defaultMap[posn.row][posn.col] = '6';
+        } else if (type <= 6) {
+            items.push_back(new Gold('7', posn));
+            defaultMap[posn.row][posn.col] = '7';
+        } else {
+            items.push_back(new DragonHoard(posn));
+            defaultMap[posn.row][posn.col] = '9';
+            // now generate dragon
+
+
+
+        }
+        displayGrid[posn.row][posn.col] = 'G';
+        // generate barriersuit
+
+        
+
+
+    }
+}
