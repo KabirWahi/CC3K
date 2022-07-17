@@ -1,0 +1,29 @@
+#include "defbuff.h"
+#include "buff.h"
+#include <string>
+using namespace std;
+
+DefBuff::DefBuff(Player* player, string name): Buff{player} {
+    this->name = name;
+    if (name == "BD") {
+        value = 5;
+    } else if (name == "WD") {
+        value = -5;
+    } else {
+        value = 0;
+    }
+    string playerRace = player->getRace();
+    if (playerRace == "Elf") {
+        value = abs(value);
+    }
+}
+
+DefBuff::~DefBuff() {}
+
+int DefBuff::getAtk() {
+    return player->getAtk();
+}
+
+int DefBuff::getDef() {
+    return value + player->getDef();
+}
