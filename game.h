@@ -25,7 +25,6 @@ class Game {
   std::vector<std::vector<char>> defaultMap;
   std::vector<std::vector<char>> displayGrid;
   char playerSymbol;
-  int getChamber(Posn posn);  // get chamber number of player
   Game(char playerSymbol);    // constructor
   ~Game();                    // destructor
   void play();                // play game

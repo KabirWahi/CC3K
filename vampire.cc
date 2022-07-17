@@ -8,6 +8,7 @@ Vampire::Vampire(Posn p) {
   atk = 25;
   def = 25;
   HP = 50;
+  gold = 1;
   position = p;
   symbol = 'V';
   race = "Vampire";

@@ -15,7 +15,6 @@ Human::Human(Posn p) {
 void Human::attack(Character *target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
   target->setHP(target->getHP() - damage);
-  cout << "PC deals " << damage << " damage to " << target->getSymbol() << " (" << target->getHP() << " HP). ";
 }
 
 int Human::getAtk() {

@@ -8,6 +8,7 @@ class Posn {
     bool operator==(const Posn &other) {
         return row == other.row && col == other.col;
     }
+    int whichChamber();
 };
 
 #endif // POSN_H

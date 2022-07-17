@@ -69,10 +69,10 @@ void Game::init() {
   int row = 0;
   int col = 0;
   int chamber = randomNum(5) + 1;
-  while (chamber == getChamber(player->getPosition())) {
+  while (chamber == player->getPosition().whichChamber()) {
     chamber = randomNum(5) + 1;
   }
-  while (displayGrid[row][col] != '.' || getChamber(Posn{row, col}) != chamber) {
+  while (displayGrid[row][col] != '.' || (Posn{row, col}).whichChamber() != chamber) {
     row = randomNum(25);
     col = randomNum(79);
   }
@@ -86,13 +86,13 @@ void Game::init() {
   }
   // generateItems();
   generateEnemies();
-  // displayGrid[row][col] = '.';
+  displayGrid[row][col] = '.';
 }
 
 Posn Game::randomPosn(int chamber) {
   int row = randomNum(25);
   int col = randomNum(79);
-  while (displayGrid[row][col] != '.') {  // || getChamber(Posn{row, col}) != chamber) {
+  while (displayGrid[row][col] != '.' || (Posn{row, col}).whichChamber() != chamber) {
     row = randomNum(25);
     col = randomNum(79);
   }
@@ -106,11 +106,9 @@ void Game::play() {
   string input;
   string msg = "";
   while (cin >> input) {
-    bool valid = false;
     bool moved = false;
     for (int i = 0; i < 8; i++) {
       if (input == movement[i]) {
-        valid = true;
         char tmp = displayGrid[player->getPosition().row + r[i]][player->getPosition().col + c[i]];
         if (tmp == '.' || tmp == '+' || tmp == '#') {
           moved = true;
@@ -121,7 +119,6 @@ void Game::play() {
       }
     }
     if (input == "a") {
-      valid = true;
       string di;
       cin >> di;
       for (int i = 0; i < 8; i++) {
@@ -132,7 +129,7 @@ void Game::play() {
               int oldHP = en->getHP();
               player->attack(en);
               int damage = oldHP - en->getHP();
-              msg = "PC deals " + to_string(damage) + " damage to " + en->getSymbol() + ". ";
+              msg = "PC deals " + to_string(damage) + " damage to " + en->getSymbol() + " (" + to_string(max(0, en->getHP())) + " HP). ";
               moved = true;
               break;
             }
@@ -143,13 +140,16 @@ void Game::play() {
     if (input == "q") {
       break;
     }
-    if (!valid || !moved) {
-      print();
-      cout << "Invalid move." << endl;
+    if (!moved) {
+      cout << "Invalid move. " << endl;
       continue;
     }
     msg = msg + update();
     print();
+    if (player->getHP() <= 0) {
+      cout << "You died :(" << endl;
+      break;
+    }
     cout << msg << endl;
   }
 }
@@ -162,6 +162,8 @@ string Game::update() {
     bool moved = false;
     bool attacked = false;
     if (en->getHP() <= 0) {
+      player->setGold(player->getGold() + en->getGold());
+      msg = msg + "You slained " + (en->getSymbol()) + " and got " + to_string(en->getGold()) + " gold. ";
       enemies.erase(remove(enemies.begin(), enemies.end(), en), enemies.end());
       continue;
     }
@@ -305,18 +307,6 @@ Game::~Game() {
     delete items[i];
   }
   delete player;
-}
-
-int Game::getChamber(Posn p) {
-  /*
-  int x = p.row;
-  int y = p.col;
-  // get chamber from x and y from defaultGrid
-  if (x >= 3 && x <= 6 && y >= 3 && y <= 28) {
-    return 1;
-  } else return 2;
-  */
-  return randomNum(5) + 1;
 }
 
 void Game::generateItems() {
