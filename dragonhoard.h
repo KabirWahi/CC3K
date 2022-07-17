@@ -5,7 +5,7 @@
 
 class DragonHoard: public Gold {
     public:
-    DragonHoard(char symbol, Posn position, std::string name, int value);
+    DragonHoard(Posn position);
     ~DragonHoard();
     bool isGuarded() override;
     void setGuarded() override;
