@@ -4,21 +4,21 @@
 #include <string>
 using namespace std;
 
-Potion::Potion(Posn position, string name): Item{' ', position}, name{name} {
-    if (name == "RH") {
+Potion::Potion(char symbol, Posn position): Item{symbol, position} {
+    if (symbol == '0') {
         value = 10;
-        symbol = '0';
-    } else if (name == "PH") {
+        name = "RH";
+    } else if (symbol == '3') {
         value = -10;
-        symbol = '3';
-    } else if (name == "BA") {
-        symbol = '1';
-    } else if (name == "BD") {
-        symbol = '2';
-    } else if (name == "WA") {
-        symbol = '4';
-    } else if (name == "WD") {
-        symbol = '5';
+        name = "PH";
+    } else if (symbol == '1') {
+        name = "BA";
+    } else if (symbol == '2') {
+        name = "BD";
+    } else if (symbol == '4') {
+        name = "WA";
+    } else if (symbol == '5') {
+        name = "WD";
     } else {} 
 }
 
