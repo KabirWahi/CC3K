@@ -6,14 +6,11 @@ using namespace std;
 
 DragonHoard::DragonHoard(Posn position): Gold{position, "DragonHoard"} {
     value = 6;
+    symbol = '9';
     guarded = true;
 }
 
 DragonHoard::~DragonHoard() {}
-
-bool DragonHoard::isGuarded() {
-    return guarded;
-}
 
 void DragonHoard::setGuarded() {
     guarded = false;
