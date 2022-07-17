@@ -4,7 +4,8 @@
 #include <string>
 using namespace std;
 
-DragonHoard::DragonHoard(char symbol, Posn position, string name, int value): Gold{symbol, position, name, value} {
+DragonHoard::DragonHoard(Posn position): Gold{position, "DragonHoard"} {
+    value = 6;
     guarded = true;
 }
 
