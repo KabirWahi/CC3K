@@ -6,6 +6,6 @@
 #include "dragon.h"
 #include "merchant.h"
 #include "phoenix.h"
-#incldue "potion.h"
+#include "potion.h"
 #include "gold.h"
 #include "dragonhoard.h"

@@ -91,7 +91,7 @@ void Game::init() {
     displayGrid[posn.row][posn.col] = 'B';
     // Add dragon code here
   }
-  // generateItems();
+  generateItems();
   generateEnemies();
   displayGrid[row][col] = '.';
 }
@@ -253,7 +253,7 @@ void Game::generateEnemies() {
     while (neighborHasPlayer(posn)) {
       posn = randomPosn(chamber);
     }
-    int type = rand() % 18; // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
+    int type = randomNum(18); // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
     if (type < 4) { // 14 - 15 Pheonix, 16 - 17 Merchant
         enemies.push_back(new Werewolf(posn));
         displayGrid[posn.row][posn.col] = 'W';
@@ -338,31 +338,21 @@ void Game::generateItems() {
     for (int i = 0; i < numPotions; i++) {
         int chamber = randomNum(5) + 1;
         Posn posn = randomPosn(chamber);
-        while (defaultMap[posn.row][posn.col] != '.') {
-            posn = randomPosn(chamber);
-        }
-        int type = rand() % 6; // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
+        int type = randomNum(6); // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
         items.push_back(new Potion('0'+type, posn));
-        defaultMap[posn.row][posn.col] = '0'+type;
         displayGrid[posn.row][posn.col] = 'P';
     }
     int numGolds = 10;
     for (int i = 0; i < numGolds; i++) {
         int chamber = randomNum(5) + 1;
         Posn posn = randomPosn(chamber);
-        while (defaultMap[posn.row][posn.col] != '.') {
-            posn = randomPosn(chamber);
-        }
-        int type = rand() % 8; // 0-4 normal gold,  5-6 small hoard, 7 dragon hoard
+        int type = randomNum(8); // 0-4 normal gold,  5-6 small hoard, 7 dragon hoard
         if (type <= 4) {
             items.push_back(new Gold('6', posn));
-            defaultMap[posn.row][posn.col] = '6';
         } else if (type <= 6) {
             items.push_back(new Gold('7', posn));
-            defaultMap[posn.row][posn.col] = '7';
         } else {
             items.push_back(new DragonHoard(posn));
-            defaultMap[posn.row][posn.col] = '9';
         }
         displayGrid[posn.row][posn.col] = 'G';
     }
