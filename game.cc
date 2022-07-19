@@ -146,6 +146,20 @@ void Game::play() {
               break;
             }
           }
+          break;
+        } else if (tmp == 'C') {
+          moved = true;
+          player->setPosition(Posn{player->getPosition().row + r[i],
+                                   player->getPosition().col + c[i]});
+          stairVisible = true;
+          for (auto it : items) {
+            if (it->getPosition() == player->getPosition()) {
+              items.erase(remove(items.begin(), items.end(), it), items.end());
+              break;
+            }
+          }
+          msg = "You moved " + directions[i] + " and picked up the compass. ";
+          break;
         }
       }
     }
@@ -197,6 +211,9 @@ string Game::update() {
       player->setGold(player->getGold() + en->getGold());
       msg = msg + "You slained " + (en->getSymbol()) + " and got " +
             to_string(en->getGold()) + " gold. ";
+      if (en->compass) {
+        items.emplace_back(new Compass(en->getPosition()));
+      }
       enemies.erase(remove(enemies.begin(), enemies.end(), en), enemies.end());
       continue;
     }
@@ -230,14 +247,17 @@ string Game::update() {
         di = randomNum(8);
       }
     }
-    displayGrid = defaultMap;
-    displayGrid[player->getPosition().row][player->getPosition().col] = '@';
-    for (auto en : enemies) {
-      displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
-    }
-    for (auto it : items) {
-      displayGrid[it->getPosition().row][it->getPosition().col] = it->getSymbol();
-    }
+  }
+  displayGrid = defaultMap;
+  displayGrid[player->getPosition().row][player->getPosition().col] = '@';
+  for (auto en : enemies) {
+    displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+  }
+  for (auto it : items) {
+    displayGrid[it->getPosition().row][it->getPosition().col] = it->getSymbol();
+  }
+  if (stairVisible) {
+    displayGrid[getStairs().row][getStairs().col] = '\\';
   }
   return msg;
 }
@@ -270,7 +290,7 @@ bool Game::neighborHasPlayer(Posn posn) {
 }
 
 void Game::generateEnemies() {
-  int numEnemies = 20 - enemies.size();
+  int numEnemies = 3;
   for (int i = 0; i < numEnemies; i++) {
     int chamber = randomNum(5) + 1;
     Posn posn = randomPosn(chamber);
@@ -298,8 +318,10 @@ void Game::generateEnemies() {
       displayGrid[posn.row][posn.col] = 'M';
     }
   }
-  int compassHolder = randomNum(20);
+  int compassHolder = 0;
   enemies[compassHolder]->compass = true;
+  cout << "Enemy " << enemies[compassHolder]->getRace() << enemies[compassHolder]->getPosition().row << " "
+       << enemies[compassHolder]->getPosition().col << " has a compass. " << endl;
 }
 
 void Game::nextLevel() {

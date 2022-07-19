@@ -10,3 +10,4 @@
 #include "gold.h"
 #include "dragonhoard.h"
 #include "barriersuit.h"
+#include "compass.h"

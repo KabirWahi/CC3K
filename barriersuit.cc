@@ -1,6 +1,4 @@
 #include "barriersuit.h"
-#include "item.h"
-#include "posn.h"
 
 BarrierSuit::BarrierSuit(Posn position): Item{10, position} {
     symbol = 'B';
