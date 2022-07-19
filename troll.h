@@ -9,6 +9,7 @@ class Troll : public Enemy {
   int getAtk() override;
   int getDef() override;
   bool hasBarrier() const override { return false; };
+  Item *getItem() override { return nullptr; };
 };
 
 #endif  // TROLL_H

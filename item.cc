@@ -21,6 +21,6 @@ bool Item::isGuarded() {
     return guarded;
 }
 
-void Item::setGuarded() {
-    return;
+void Item::setGuarded(bool value) {
+    guarded = value;
 }

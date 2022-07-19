@@ -17,7 +17,7 @@ class Item {
     Posn getPosition(); // return position
     int getValue(); // return value
     bool isGuarded(); // for a DragonHoard/BarrierSuit, if it is guarded by a dragon
-    virtual void setGuarded(); // for a DragonHoard/BarrierSuit, set false if the dragon is dead
+    virtual void setGuarded(bool value); // for a DragonHoard/BarrierSuit, set false if the dragon is dead
 
 };
 

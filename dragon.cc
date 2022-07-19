@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Dragon::Dragon(Posn p, Item *i) {
+Dragon::Dragon(Posn p, Item *i) : guarding(i) {
   atk = 20;
   def = 20;
   HP = 150;
@@ -25,3 +25,5 @@ void Dragon::attack(Character *target) {
 int Dragon::getAtk() { return atk; }
 
 int Dragon::getDef() { return def; }
+
+Item * Dragon::getItem() { return guarding; }

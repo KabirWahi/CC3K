@@ -6,7 +6,6 @@ class BarrierSuit: public Item {
     public:
     BarrierSuit(Posn position);
     ~BarrierSuit();
-    void setGuarded() override;
 };
 
 #endif

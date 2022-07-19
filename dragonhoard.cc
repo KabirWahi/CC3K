@@ -12,7 +12,3 @@ DragonHoard::DragonHoard(Posn position): Gold{9, position} {
 }
 
 DragonHoard::~DragonHoard() {}
-
-void DragonHoard::setGuarded() {
-    guarded = false;
-}
