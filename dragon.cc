@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Dragon::Dragon(Posn p) {
+Dragon::Dragon(Posn p, Item *i) {
   atk = 20;
   def = 20;
   HP = 150;

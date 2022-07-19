@@ -8,9 +8,10 @@ class Item {
     Posn position;
     int value;  
     bool guarded;
+    int id;
 
     public:
-    Item(char symbol, Posn position);
+    Item(int id, Posn position);
     virtual ~Item() = 0;
     char getSymbol(); // return symbol
     Posn getPosition(); // return position

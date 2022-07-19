@@ -1,7 +1,7 @@
 #include "item.h"
 #include "posn.h"
 
-Item::Item(char symbol, Posn position): symbol{symbol}, position{position}, value{0}, guarded{false} {}
+Item::Item(int id, Posn position): id{id}, position{position}, value{0}, guarded{false} {}
 
 Item::~Item() {}
 

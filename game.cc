@@ -1,5 +1,7 @@
 #include "game.h"
+
 #include <time.h>
+
 #include <algorithm>
 #include <chrono>
 #include <iostream>
@@ -7,6 +9,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+
 #include "depends.h"
 
 using namespace std;
@@ -85,12 +88,6 @@ void Game::init() {
   }
   stairPosition = Posn{row, col};
   displayGrid[row][col] = '\\';
-  if (getLevel() == barrierFloor) {
-    int chamber = randomNum(5) + 1;
-    Posn posn = randomPosn(chamber);
-    displayGrid[posn.row][posn.col] = 'B';
-    // Add dragon code here
-  }
   generateItems();
   generateEnemies();
   displayGrid[row][col] = '.';
@@ -104,6 +101,15 @@ Posn Game::randomPosn(int chamber) {
     row = randomNum(25);
     col = randomNum(79);
   }
+  return Posn{row, col};
+}
+
+Posn randomNeighbour(Posn posn) {
+  int row = posn.row;
+  int col = posn.col;
+  int neighbour = randomNum(8);
+  row += r[neighbour];
+  col += c[neighbour];
   return Posn{row, col};
 }
 
@@ -125,6 +131,21 @@ void Game::play() {
                                    player->getPosition().col + c[i]});
           msg = "You moved " + directions[i] + ". ";
           break;
+        } else if (tmp == 'G') {
+          moved = true;
+          player->setPosition(Posn{player->getPosition().row + r[i],
+                                   player->getPosition().col + c[i]});
+          for (auto it : items) {
+            if (it->getPosition() == player->getPosition()) {
+              int gold = it->getValue();
+              player->setGold(player->getGold() + gold);
+              msg = "You moved " + directions[i] + " and picked up " +
+                    to_string(gold) + " gold. ";
+              displayGrid[it->getPosition().row][it->getPosition().col] = '.';
+              items.erase(remove(items.begin(), items.end(), it), items.end());
+              break;
+            }
+          }
         }
       }
     }
@@ -214,6 +235,9 @@ string Game::update() {
     for (auto en : enemies) {
       displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
     }
+    for (auto it : items) {
+      displayGrid[it->getPosition().row][it->getPosition().col] = it->getSymbol();
+    }
   }
   return msg;
 }
@@ -253,25 +277,25 @@ void Game::generateEnemies() {
     while (neighborHasPlayer(posn)) {
       posn = randomPosn(chamber);
     }
-    int type = randomNum(18); // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
-    if (type < 4) { // 14 - 15 Pheonix, 16 - 17 Merchant
-        enemies.push_back(new Werewolf(posn));
-        displayGrid[posn.row][posn.col] = 'W';
+    int type = randomNum(18);  // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
+    if (type < 4) {            // 14 - 15 Pheonix, 16 - 17 Merchant
+      enemies.push_back(new Werewolf(posn));
+      displayGrid[posn.row][posn.col] = 'W';
     } else if (type < 7) {
-        enemies.push_back(new Vampire(posn));
-        displayGrid[posn.row][posn.col] = 'V';
+      enemies.push_back(new Vampire(posn));
+      displayGrid[posn.row][posn.col] = 'V';
     } else if (type < 12) {
-        enemies.push_back(new Goblin(posn));
-        displayGrid[posn.row][posn.col] = 'N';
+      enemies.push_back(new Goblin(posn));
+      displayGrid[posn.row][posn.col] = 'N';
     } else if (type < 14) {
-        enemies.push_back(new Troll(posn));
-        displayGrid[posn.row][posn.col] = 'T';
+      enemies.push_back(new Troll(posn));
+      displayGrid[posn.row][posn.col] = 'T';
     } else if (type < 16) {
-        enemies.push_back(new Phoenix(posn));
-        displayGrid[posn.row][posn.col] = 'X';
+      enemies.push_back(new Phoenix(posn));
+      displayGrid[posn.row][posn.col] = 'X';
     } else {
-        enemies.push_back(new Merchant(posn));
-        displayGrid[posn.row][posn.col] = 'M';
+      enemies.push_back(new Merchant(posn));
+      displayGrid[posn.row][posn.col] = 'M';
     }
   }
   int compassHolder = randomNum(20);
@@ -304,7 +328,7 @@ void Game::nextLevel() {
 
 int Game::getLevel() { return level; }
 
-Player* Game::getPlayer() { return player; }
+Player *Game::getPlayer() { return player; }
 
 Posn Game::getStairs() { return stairPosition; }
 
@@ -334,26 +358,41 @@ Game::~Game() {
 }
 
 void Game::generateItems() {
-    int numPotions = 10;
-    for (int i = 0; i < numPotions; i++) {
-        int chamber = randomNum(5) + 1;
-        Posn posn = randomPosn(chamber);
-        int type = randomNum(6); // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
-        items.push_back(new Potion('0'+type, posn));
-        displayGrid[posn.row][posn.col] = 'P';
+  int numPotions = 10;
+  for (int i = 0; i < numPotions; i++) {
+    int chamber = randomNum(5) + 1;
+    Posn posn = randomPosn(chamber);
+    int type = randomNum(6);  // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
+    items.emplace_back(new Potion(0 + type, posn));
+    displayGrid[posn.row][posn.col] = 'P';
+  }
+  int numGolds = 10;
+  for (int i = 0; i < numGolds; i++) {
+    int chamber = randomNum(5) + 1;
+    Posn posn = randomPosn(chamber);
+    int type = randomNum(8);  // 0-4 normal gold,  5-6 small hoard, 7 dragon hoard
+    if (type <= 4) {
+      items.emplace_back(new Gold(6, posn));
+    } else if (type <= 6) {
+      items.emplace_back(new Gold(7, posn));
+    } else {
+      Item *item = new DragonHoard(posn);
+      items.emplace_back(item);
+      // random posn for dragon
+      Posn dragonPosn = randomNeighbour(posn);
+      enemies.push_back(new Dragon(dragonPosn, item));
+      displayGrid[dragonPosn.row][dragonPosn.col] = 'D';
     }
-    int numGolds = 10;
-    for (int i = 0; i < numGolds; i++) {
-        int chamber = randomNum(5) + 1;
-        Posn posn = randomPosn(chamber);
-        int type = randomNum(8); // 0-4 normal gold,  5-6 small hoard, 7 dragon hoard
-        if (type <= 4) {
-            items.push_back(new Gold('6', posn));
-        } else if (type <= 6) {
-            items.push_back(new Gold('7', posn));
-        } else {
-            items.push_back(new DragonHoard(posn));
-        }
-        displayGrid[posn.row][posn.col] = 'G';
-    }
+    displayGrid[posn.row][posn.col] = 'G';
+  }
+  if (getLevel() == barrierFloor) {
+    int chamber = randomNum(5) + 1;
+    Posn posn = randomPosn(chamber);
+    BarrierSuit *bar = new BarrierSuit(posn);
+    items.emplace_back(bar);
+    displayGrid[posn.row][posn.col] = 'B';
+    Posn dragonPosn = randomNeighbour(posn);
+    enemies.push_back(new Dragon(dragonPosn, bar));
+    displayGrid[dragonPosn.row][dragonPosn.col] = 'D';
+  }
 }

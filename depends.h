@@ -9,3 +9,4 @@
 #include "potion.h"
 #include "gold.h"
 #include "dragonhoard.h"
+#include "barriersuit.h"
