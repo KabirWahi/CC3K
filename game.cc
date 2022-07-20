@@ -75,13 +75,12 @@ Game::Game(char playerSymbol)
 
 void Game::init() {
   generatePlayer(playerSymbol);
-  int row = 0;
-  int col = 0;
   int chamber = randomNum(5) + 1;
   while (chamber == player->getPosition().whichChamber()) {
     chamber = randomNum(5) + 1;
   }
   stairPosition = randomPosn(chamber);
+  stairPosition = Posn{3, 3};
   displayGrid[stairPosition.row][stairPosition.col] = '\\';
   generateItems();
   generateEnemies();
@@ -257,9 +256,9 @@ string Game::update() {
           Posn{en->getPosition().row + r[i], en->getPosition().col + c[i]};
       if (enemyattack == player->getPosition()) {
         if (en->getSymbol() == 'D') {
-          for (int i = 0; i < 8; i++) {
-            if (en->getItem()->getPosition().row == player->getPosition().row + r[i] &&
-                en->getItem()->getPosition().col == player->getPosition().col + c[i]) {
+          for (int j = 0; j < 8; j++) {
+            if (en->getItem()->getPosition().row == player->getPosition().row + r[j] &&
+                en->getItem()->getPosition().col == player->getPosition().col + c[j]) {
                   int hit = randomNum(2);
                   if (hit == 1) {
                     int oldHP = player->getHP();
