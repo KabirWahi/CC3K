@@ -82,10 +82,10 @@ void Game::init() {
     chamber = randomNum(5) + 1;
   }
   stairPosition = randomPosn(chamber);
-  displayGrid[row][col] = '\\';
+  displayGrid[stairPosition.row][stairPosition.col] = '\\';
   generateItems();
   generateEnemies();
-  displayGrid[row][col] = '.';
+  displayGrid[stairPosition.row][stairPosition.col] = '.';
 }
 
 Posn Game::randomPosn(int chamber) {
@@ -127,11 +127,18 @@ void Game::play() {
       if (input == movement[i]) {
         char tmp = displayGrid[player->getPosition().row + r[i]]
                               [player->getPosition().col + c[i]];
-        if (tmp == '.' || tmp == '+' || tmp == '#') {
+        if (tmp == '.' || tmp == '+' || tmp == '#' || tmp == '\\') {
           moved = true;
           player->setPosition(Posn{player->getPosition().row + r[i],
                                    player->getPosition().col + c[i]});
-          msg = "You moved " + directions[i] + ". ";
+          if (player->getPosition() == stairPosition) {
+            nextLevel();
+            newLevel = true;
+            msg = "You found the stairs! Welcome to the next floor!";
+          }
+          else {
+            msg = "You moved " + directions[i] + ". ";
+          }
           break;
         } else if (tmp == 'G') {
           for (int j = 0; j < items.size(); j++) {
@@ -212,7 +219,11 @@ void Game::play() {
       cout << "Invalid move. " << endl;
       continue;
     }
-    msg = msg + update();
+    if (!newLevel) {
+      msg = msg + update(); 
+    } else {
+      newLevel = false;
+    }
     print();
     cout << msg << endl;
     if (player->getHP() <= 0) {
@@ -245,18 +256,38 @@ string Game::update() {
       Posn enemyattack =
           Posn{en->getPosition().row + r[i], en->getPosition().col + c[i]};
       if (enemyattack == player->getPosition()) {
-        int hit = randomNum(2);
-        if (hit == 1) {
-          int oldHP = player->getHP();
-          en->attack(player);
-          if (oldHP != player->getHP()) {
-            int damage = oldHP - player->getHP();
-            msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+        if (en->getSymbol() == 'D') {
+          for (int i = 0; i < 8; i++) {
+            if (en->getItem()->getPosition().row == player->getPosition().row + r[i] &&
+                en->getItem()->getPosition().col == player->getPosition().col + c[i]) {
+                  int hit = randomNum(2);
+                  if (hit == 1) {
+                    int oldHP = player->getHP();
+                    en->attack(player);
+                    if (oldHP != player->getHP()) {
+                      int damage = oldHP - player->getHP();
+                      msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+                    }
+                  } else {
+                    msg = msg + en->getSymbol() + " missed. ";
+                  }
+                  attacked = true;
+            }
           }
         } else {
-          msg = msg + en->getSymbol() + " missed. ";
+          int hit = randomNum(2);
+          if (hit == 1) {
+            int oldHP = player->getHP();
+            en->attack(player);
+            if (oldHP != player->getHP()) {
+              int damage = oldHP - player->getHP();
+              msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+            }
+          } else {
+            msg = msg + en->getSymbol() + " missed. ";
+          }
+          attacked = true;
         }
-        attacked = true;
       }
     }
     if (attacked) {
@@ -335,7 +366,7 @@ bool Game::neighborHasPlayer(Posn posn) {
 }
 
 void Game::generateEnemies() {
-  int numEnemies = 3;
+  int numEnemies = 20 - enemies.size();
   for (int i = 0; i < numEnemies; i++) {
     int chamber = randomNum(5) + 1;
     Posn posn = randomPosn(chamber);
@@ -363,7 +394,7 @@ void Game::generateEnemies() {
       displayGrid[posn.row][posn.col] = 'M';
     }
   }
-  int compassHolder = 0;
+  int compassHolder = randomNum(20);
   enemies[compassHolder]->compass = true;
 }
 
@@ -404,8 +435,8 @@ void Game::print() {
     }
     cout << endl;
   }
-  cout << "Race: " << player->getRace() << " Gold: " << player->getGold()
-       << endl;
+  cout << "Race: " << player->getRace() << " Gold: " << player->getGold() 
+       << "\t\t\t\t\t\tfloor " << level << endl;
   cout << "HP: " << max(0, player->getHP()) << endl;
   cout << "Atk: " << player->getAtk() << endl;
   cout << "Def: " << player->getDef() << endl;

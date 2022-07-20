@@ -15,6 +15,7 @@ class Game {
   bool stairVisible;
   int level;
   int barrierFloor;
+  bool newLevel = false;
 
   void generatePlayer(char symbol);  // generate player
   void generateEnemies();            // generate enemies and add to vector enemies
