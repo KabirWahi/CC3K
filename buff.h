@@ -18,18 +18,18 @@ class Buff : public Player {
   void attack(Character* target);
   void addGold(int amount) override;
   void addHealth(int amount) override;
-  bool hasBarrier() = 0;
-  void toggleBarrier() = 0;
-  int getHP() = 0;                                 // return HP
-  int getGold() = 0;                               // return gold
-  Posn getPosition() = 0;                          // return position
-  char getSymbol() = 0;                            // return symbol
-  std::string getRace() = 0;                       // return race
-  void setPosition(Posn position) = 0;             // set position
-  void setHP(int HP) = 0;                          // set HP
-  void setGold(int gold) = 0;                      // set gold
-  void setAtk(int atk) = 0;                        // set atk
-  void setDef(int def) = 0;                        // set def
+  bool hasBarrier();
+  void toggleBarrier();
+  int getHP();                                 // return HP
+  int getGold();                               // return gold
+  Posn getPosition();                          // return position
+  char getSymbol();                            // return symbol
+  std::string getRace();                       // return race
+  void setPosition(Posn position);             // set position
+  void setHP(int HP);                          // set HP
+  void setGold(int gold);                      // set gold
+  void setAtk(int atk);                        // set atk
+  void setDef(int def);                        // set def
 };
 
 #endif
