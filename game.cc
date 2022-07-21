@@ -75,22 +75,16 @@ Game::Game(char playerSymbol)
 
 void Game::init() {
   generatePlayer(playerSymbol);
-  int row = 0;
-  int col = 0;
   int chamber = randomNum(5) + 1;
   while (chamber == player->getPosition().whichChamber()) {
     chamber = randomNum(5) + 1;
   }
-  while (displayGrid[row][col] != '.' ||
-         (Posn{row, col}).whichChamber() != chamber) {
-    row = randomNum(25);
-    col = randomNum(79);
-  }
-  stairPosition = Posn{row, col};
-  displayGrid[row][col] = '\\';
+  stairPosition = randomPosn(chamber);
+  stairPosition = Posn{3, 3};
+  displayGrid[stairPosition.row][stairPosition.col] = '\\';
   generateItems();
   generateEnemies();
-  displayGrid[row][col] = '.';
+  displayGrid[stairPosition.row][stairPosition.col] = '.';
 }
 
 Posn Game::randomPosn(int chamber) {
@@ -104,12 +98,19 @@ Posn Game::randomPosn(int chamber) {
   return Posn{row, col};
 }
 
-Posn randomNeighbour(Posn posn) {
+Posn Game::randomNeighbour(Posn posn) {
   int row = posn.row;
   int col = posn.col;
   int neighbour = randomNum(8);
   row += r[neighbour];
   col += c[neighbour];
+  while (displayGrid[row][col] != '.') {
+    row = posn.row;
+    col = posn.col;
+    neighbour = randomNum(8);
+    row += r[neighbour];
+    col += c[neighbour];
+  }
   return Posn{row, col};
 }
 
@@ -125,25 +126,35 @@ void Game::play() {
       if (input == movement[i]) {
         char tmp = displayGrid[player->getPosition().row + r[i]]
                               [player->getPosition().col + c[i]];
-        if (tmp == '.' || tmp == '+' || tmp == '#') {
+        if (tmp == '.' || tmp == '+' || tmp == '#' || tmp == '\\') {
           moved = true;
           player->setPosition(Posn{player->getPosition().row + r[i],
                                    player->getPosition().col + c[i]});
-          msg = "You moved " + directions[i] + ". ";
+          if (player->getPosition() == stairPosition) {
+            nextLevel();
+            newLevel = true;
+            msg = "You found the stairs! Welcome to the next floor!";
+          }
+          else {
+            msg = "You moved " + directions[i] + ". ";
+          }
           break;
         } else if (tmp == 'G') {
-          moved = true;
-          player->setPosition(Posn{player->getPosition().row + r[i],
-                                   player->getPosition().col + c[i]});
-          for (auto it : items) {
-            if (it->getPosition() == player->getPosition()) {
-              int gold = it->getValue();
-              player->setGold(player->getGold() + gold);
-              msg = "You moved " + directions[i] + " and picked up " +
-                    to_string(gold) + " gold. ";
-              displayGrid[it->getPosition().row][it->getPosition().col] = '.';
-              items.erase(remove(items.begin(), items.end(), it), items.end());
-              break;
+          for (int j = 0; j < items.size(); j++) {
+            if (items[j]->getPosition().row == player->getPosition().row + r[i] &&
+                items[j]->getPosition().col == player->getPosition().col + c[i]) {
+              if (!items[j]->isGuarded()) {
+                moved = true;
+                player->setPosition(Posn{player->getPosition().row + r[i],
+                      player->getPosition().col + c[i]});
+                int gold = items[j]->getValue();
+                player->setGold(player->getGold() + gold);
+                msg = "You moved " + directions[i] + " and picked up " +
+                     to_string(gold) + " gold. ";
+                displayGrid[items[j]->getPosition().row][items[j]->getPosition().col] = '.';
+                items.erase(remove(items.begin(), items.end(), items[j]), items.end());
+                break;
+              }
             }
           }
           break;
@@ -160,6 +171,22 @@ void Game::play() {
           }
           msg = "You moved " + directions[i] + " and picked up the compass. ";
           break;
+        } else if (tmp == 'B') {
+          for (int j = 0; j < items.size(); j++) {
+            if (items[j]->getPosition().row == player->getPosition().row + r[i] &&
+                items[j]->getPosition().col == player->getPosition().col + c[i]) {
+              if (!items[j]->isGuarded()) {
+                moved = true;
+                player->setPosition(Posn{player->getPosition().row + r[i],
+                      player->getPosition().col + c[i]});
+                player->toggleBarrier();
+                msg = "You moved " + directions[i] + " and picked up the barrier. ";
+                displayGrid[items[j]->getPosition().row][items[j]->getPosition().col] = '.';
+                items.erase(remove(items.begin(), items.end(), items[j]), items.end());
+                break;
+              }
+            }
+          }
         }
       }
     }
@@ -223,7 +250,11 @@ void Game::play() {
       cout << "Invalid move. " << endl;
       continue;
     }
-    msg = msg + update();
+    if (!newLevel) {
+      msg = msg + update(); 
+    } else {
+      newLevel = false;
+    }
     print();
     cout << msg << endl;
     if (player->getHP() <= 0) {
@@ -246,6 +277,9 @@ string Game::update() {
       if (en->compass) {
         items.emplace_back(new Compass(en->getPosition()));
       }
+      if (en->getSymbol() == 'D') {
+        en->getItem()->setGuarded(false);
+      }
       enemies.erase(remove(enemies.begin(), enemies.end(), en), enemies.end());
       continue;
     }
@@ -253,18 +287,38 @@ string Game::update() {
       Posn enemyattack =
           Posn{en->getPosition().row + r[i], en->getPosition().col + c[i]};
       if (enemyattack == player->getPosition()) {
-        int hit = randomNum(2);
-        if (hit == 1) {
-          int oldHP = player->getHP();
-          en->attack(player);
-          if (oldHP != player->getHP()) {
-            int damage = oldHP - player->getHP();
-            msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+        if (en->getSymbol() == 'D') {
+          for (int j = 0; j < 8; j++) {
+            if (en->getItem()->getPosition().row == player->getPosition().row + r[j] &&
+                en->getItem()->getPosition().col == player->getPosition().col + c[j]) {
+                  int hit = randomNum(2);
+                  if (hit == 1) {
+                    int oldHP = player->getHP();
+                    en->attack(player);
+                    if (oldHP != player->getHP()) {
+                      int damage = oldHP - player->getHP();
+                      msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+                    }
+                  } else {
+                    msg = msg + en->getSymbol() + " missed. ";
+                  }
+                  attacked = true;
+            }
           }
         } else {
-          msg = msg + en->getSymbol() + " missed. ";
+          int hit = randomNum(2);
+          if (hit == 1) {
+            int oldHP = player->getHP();
+            en->attack(player);
+            if (oldHP != player->getHP()) {
+              int damage = oldHP - player->getHP();
+              msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+            }
+          } else {
+            msg = msg + en->getSymbol() + " missed. ";
+          }
+          attacked = true;
         }
-        attacked = true;
       }
     }
     if (attacked) {
@@ -273,8 +327,29 @@ string Game::update() {
     int di = randomNum(8);
     while (!moved) {
       if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
-        en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
-        moved = true;
+        if (en->getSymbol() == 'D') {
+          bool correctMovement = false;
+          for (int i = 0; i < 8; i++) {
+            if (en->getItem()->getPosition().row + r[i] == en->getPosition().row + r[di] &&
+                en->getItem()->getPosition().col + c[i] == en->getPosition().col + c[di]) {
+              correctMovement = true;
+              break;
+            }
+          }
+          if (correctMovement) {
+            displayGrid[en->getPosition().row][en->getPosition().col] = '.';
+            en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
+            displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+            moved = true;
+          } else {
+            di = randomNum(8);
+          }
+        } else {
+          displayGrid[en->getPosition().row][en->getPosition().col] = '.';
+          en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
+          displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+          moved = true;
+        }
       } else {
         di = randomNum(8);
       }
@@ -320,7 +395,7 @@ bool Game::neighborHasPlayer(Posn posn) {
 }
 
 void Game::generateEnemies() {
-  int numEnemies = 3;
+  int numEnemies = 20 - enemies.size();
   for (int i = 0; i < numEnemies; i++) {
     int chamber = randomNum(5) + 1;
     Posn posn = randomPosn(chamber);
@@ -348,10 +423,8 @@ void Game::generateEnemies() {
       displayGrid[posn.row][posn.col] = 'M';
     }
   }
-  int compassHolder = 0;
+  int compassHolder = randomNum(20);
   enemies[compassHolder]->compass = true;
-  cout << "Enemy " << enemies[compassHolder]->getRace() << enemies[compassHolder]->getPosition().row << " "
-       << enemies[compassHolder]->getPosition().col << " has a compass. " << endl;
 }
 
 void Game::nextLevel() {
@@ -391,8 +464,8 @@ void Game::print() {
     }
     cout << endl;
   }
-  cout << "Race: " << player->getRace() << " Gold: " << player->getGold()
-       << endl;
+  cout << "Race: " << player->getRace() << " Gold: " << player->getGold() 
+       << "\t\t\t\t\t\tfloor " << level << endl;
   cout << "HP: " << max(0, player->getHP()) << endl;
   cout << "Atk: " << player->getAtk() << endl;
   cout << "Def: " << player->getDef() << endl;

@@ -15,11 +15,13 @@ class Game {
   bool stairVisible;
   int level;
   int barrierFloor;
+  bool newLevel = false;
 
   void generatePlayer(char symbol);  // generate player
   void generateEnemies();            // generate enemies and add to vector enemies
   void generateItems();              // generate items and add to vector items
   Posn randomPosn(int chamber);      // generate random valid posn
+  Posn randomNeighbour(Posn posn); // generate random neighbour of posn
  public:
   std::vector<std::vector<char>> defaultMap;
   std::vector<std::vector<char>> displayGrid;
