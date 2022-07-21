@@ -8,9 +8,6 @@ class Human : public Player {
 
  public:
   Human(Posn p);
-  void attack(Character *target) override;
-  int getAtk() override;
-  int getDef() override;
 };
 
 #endif  // HUMAN_H

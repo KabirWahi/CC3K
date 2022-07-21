@@ -1,6 +1,7 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 #include <math.h>
+
 #include <string>
 
 #include "posn.h"
@@ -20,18 +21,18 @@ class Character {
   ~Character();                                // destructor
   virtual int getAtk();                        // return atk
   virtual int getDef();                        // return def
-  int getHP();                                 // return HP
-  int getGold();                               // return gold
-  Posn getPosition();                          // return position
-  char getSymbol();                            // return symbol
-  std::string getRace();                       // return race
-  void setPosition(Posn position);             // set position
+  virtual int getHP();                         // return HP
+  virtual int getGold();                       // return gold
+  virtual Posn getPosition();                  // return position
+  virtual char getSymbol();                    // return symbol
+  virtual std::string getRace();               // return race
+  virtual void setPosition(Posn position);     // set position
   virtual void attack(Character *target) = 0;  // attack target
-  void setHP(int HP);                          // set HP
-  void setGold(int gold);                      // set gold
-  void setAtk(int atk);                        // set atk
-  void setDef(int def);                        // set def
-  virtual bool hasBarrier() const = 0;         // return barrier
+  virtual void setHP(int HP);                  // set HP
+  virtual void setGold(int gold);              // set gold
+  virtual void setAtk(int atk);                // set atk
+  virtual void setDef(int def);                // set def
+  virtual bool hasBarrier();                   // return barrier
 };
 
 #endif  // CHARACTER_H

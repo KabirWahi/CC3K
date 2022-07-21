@@ -11,3 +11,7 @@
 #include "dragonhoard.h"
 #include "barriersuit.h"
 #include "compass.h"
+#include "defbuff.h"
+#include "atkbuff.h"
+#include "dwarf.h"
+#include "elf.h"

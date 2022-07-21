@@ -16,6 +16,10 @@ Posn Item::getPosition() {
 int Item::getValue() {
     return value;
 }
+
+int Item::getId() {
+    return id;
+}
     
 bool Item::isGuarded() {
     return guarded;

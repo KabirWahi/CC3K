@@ -16,6 +16,7 @@ class Item {
     char getSymbol(); // return symbol
     Posn getPosition(); // return position
     int getValue(); // return value
+    int getId(); // return id
     bool isGuarded(); // for a DragonHoard/BarrierSuit, if it is guarded by a dragon
     virtual void setGuarded(); // for a DragonHoard/BarrierSuit, set false if the dragon is dead
 

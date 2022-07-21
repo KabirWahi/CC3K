@@ -184,6 +184,38 @@ void Game::play() {
         }
       }
     }
+    if (input == "u") {
+      string di;
+      cin >> di;
+      for (int i = 0; i < 8; i++) {
+        if (di == movement[i]) {
+          Posn potionpos = Posn{player->getPosition().row + r[i],
+                               player->getPosition().col + c[i]};
+          for (auto it : items) {
+            if (potionpos == it->getPosition()) {
+              if (it->getId() == 0 || it->getId() == 3) {
+                player->addHealth(it->getValue());
+              }
+              if (it->getId() == 1) {
+                player = new AtkBuff(player, "BA");
+              }
+              if (it->getId() == 2) {
+                player = new DefBuff(player, "BD");
+              }
+              if (it->getId() == 4) {
+                player = new AtkBuff(player, "WA");
+              }
+              if (it->getId() == 5) {
+                player = new DefBuff(player, "WD");
+              }
+              msg = "PC picked up a potion. ";
+              moved = true;
+              break;
+            }
+          }
+        }
+      }
+    }
     if (input == "q") {
       break;
     }
@@ -266,17 +298,15 @@ void Game::generatePlayer(char symbol) {
   int chamber = randomNum(5) + 1;
   Posn posn = randomPosn(chamber);
   player = new Human(posn);
-  /*
   if (playerSymbol == 'h') {
       player = new Human(posn);
   } else if (playerSymbol == 'd') {
       player = new Dwarf(posn);
   } else if (playerSymbol == 'e') {
       player = new Elf(posn);
-  } else {
+  } /*else {
       player = new Orc(posn);
-  }
-  */
+  }*/
   displayGrid[posn.row][posn.col] = '@';
 }
 

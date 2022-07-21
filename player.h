@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "character.h"
+#include "potion.h"
 
 class Player : public Character {
  protected:
@@ -9,11 +10,12 @@ class Player : public Character {
   char symbol = '@';
 
  public:
-  virtual int getAtk() = 0;
-  virtual int getDef() = 0;
-  virtual void attack(Character *target) = 0;
+  virtual void addGold(int amount);
+  virtual void addHealth(int amount);
+  virtual void attack(Character *target);
   virtual bool hasBarrier() const;
-  void toggleBarrier();
+  virtual void toggleBarrier();
+  virtual ~Player();
 };
 
 #endif  // PLAYER_H

@@ -23,4 +23,8 @@ Potion::Potion(int id, Posn position): Item{id, position} {
     } else {} 
 }
 
+string Potion::getName() {
+    return name;
+}
+
 Potion::~Potion() {}

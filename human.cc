@@ -11,16 +11,3 @@ Human::Human(Posn p) {
   position = p;
   race = "Human";
 }
-
-void Human::attack(Character *target) {
-  int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
-  target->setHP(target->getHP() - damage);
-}
-
-int Human::getAtk() {
-  return atk;
-}
-
-int Human::getDef() {
-  return def;
-}

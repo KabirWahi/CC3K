@@ -1,6 +1,7 @@
 #include "character.h"
 
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
