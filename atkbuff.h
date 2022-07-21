@@ -9,7 +9,6 @@ class AtkBuff: public Buff {
     AtkBuff(Player* player, std::string name);
     virtual ~AtkBuff();
     int getAtk() override;
-    int getDef() override;
     virtual bool getknownPotions(int index) override;
     virtual void toggleknownPotions(int index) override;
 };

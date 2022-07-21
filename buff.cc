@@ -8,6 +8,14 @@ Buff::~Buff() {
   delete player;
 }
 
+int Buff::getAtk() {
+  return player->getAtk();
+}
+
+int Buff::getDef() {
+  return player->getDef();
+}
+
 void Buff::attack(Character* target) {
   player->attack(target);
 }
@@ -20,7 +28,7 @@ void Buff::addHealth(int amount) {
   player->addHealth(amount);
 }
 
-bool Buff::hasBarrier() {
+bool Buff::hasBarrier() const {
   return player->hasBarrier();
 }
 

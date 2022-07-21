@@ -13,23 +13,23 @@ class Buff : public Player {
  public:
   Buff(Player* player);
   ~Buff() override;
-  int getAtk() = 0;
-  int getDef() = 0;
-  void attack(Character* target);
+  int getAtk() override;
+  int getDef() override;
+  void attack(Character* target) override;
   void addGold(int amount) override;
   void addHealth(int amount) override;
-  bool hasBarrier();
-  void toggleBarrier();
-  int getHP();                                 // return HP
-  int getGold();                               // return gold
-  Posn getPosition();                          // return position
-  char getSymbol();                            // return symbol
-  std::string getRace();                       // return race
-  void setPosition(Posn position);             // set position
-  void setHP(int HP);                          // set HP
-  void setGold(int gold);                      // set gold
-  void setAtk(int atk);                        // set atk
-  void setDef(int def);                        // set def
+  bool hasBarrier() const override;
+  void toggleBarrier() override;
+  int getHP() override;                                 // return HP
+  int getGold() override;                               // return gold
+  Posn getPosition() override;                          // return position
+  char getSymbol() override;                            // return symbol
+  std::string getRace() override;                       // return race
+  void setPosition(Posn position) override;             // set position
+  void setHP(int HP) override;                          // set HP
+  void setGold(int gold) override;                      // set gold
+  void setAtk(int atk) override;                        // set atk
+  void setDef(int def) override;                        // set def
 };
 
 #endif

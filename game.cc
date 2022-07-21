@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "depends.h"
 
@@ -32,38 +33,13 @@ int randomNum(int upperBound) {
   return v[0];
 }
 
-Game::Game(char playerSymbol)
-    : playerSymbol(playerSymbol),
-      level(5),
-      stairVisible(false),
-      barrierFloor{randomNum(5) + 1} {
-  string map[25] = {
-      "|-----------------------------------------------------------------------------|",
-      "|                                                                             |",
-      "| |--------------------------|        |-----------------------|               |",
-      "| |..........................|        |.......................|               |",
-      "| |..........................+########+.......................|-------|       |",
-      "| |..........................|   #    |...............................|--|    |",
-      "| |..........................|   #    |..................................|--| |",
-      "| |----------+---------------|   #    |----+----------------|...............| |",
-      "|            #                 #############                |...............| |",
-      "|            #                 #     |-----+------|         |...............| |",
-      "|            #                 #     |............|         |...............| |",
-      "|            ###################     |............|   ######+...............| |",
-      "|            #                 #     |............|   #     |...............| |",
-      "|            #                 #     |-----+------|   #     |--------+------| |",
-      "|  |---------+-----------|     #           #          #              #        |",
-      "|  |.....................|     #           #          #         |----+------| |",
-      "|  |.....................|     ########################         |...........| |",
-      "|  |.....................|     #           #                    |...........| |",
-      "|  |.....................|     #    |------+--------------------|...........| |",
-      "|  |.....................|     #    |.......................................| |",
-      "|  |.....................+##########+.......................................| |",
-      "|  |.....................|          |.......................................| |",
-      "|  |---------------------|          |---------------------------------------| |",
-      "|                                                                             |",
-      "|-----------------------------------------------------------------------------|"};
-
+void Game::changeMap(string filename) {
+  ifstream file(filename);
+  vector<string> map;
+  string line;
+  while (getline(file, line)) {
+    map.push_back(line);
+  }
   for (int i = 0; i < 25; i++) {
     defaultMap.push_back(vector<char>());
     for (int j = 0; j < 79; j++) {
@@ -72,6 +48,9 @@ Game::Game(char playerSymbol)
   }
   displayGrid = defaultMap;
 }
+
+Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1),
+                                stairVisible(false), barrierFloor{randomNum(5) + 1} {}
 
 void Game::init() {
   generatePlayer(playerSymbol);
@@ -139,8 +118,7 @@ void Game::play() {
             nextLevel();
             newLevel = true;
             msg = "You found the stairs! Welcome to the next floor!";
-          }
-          else {
+          } else {
             msg = "You moved " + directions[i] + ". ";
           }
           break;
@@ -151,11 +129,11 @@ void Game::play() {
               if (!items[j]->isGuarded()) {
                 moved = true;
                 player->setPosition(Posn{player->getPosition().row + r[i],
-                      player->getPosition().col + c[i]});
+                                         player->getPosition().col + c[i]});
                 int gold = items[j]->getValue();
                 player->setGold(player->getGold() + gold);
                 msg = "You moved " + directions[i] + " and picked up " +
-                     to_string(gold) + " gold. ";
+                      to_string(gold) + " gold. ";
                 displayGrid[items[j]->getPosition().row][items[j]->getPosition().col] = '.';
                 items.erase(remove(items.begin(), items.end(), items[j]), items.end());
                 break;
@@ -183,7 +161,7 @@ void Game::play() {
               if (!items[j]->isGuarded()) {
                 moved = true;
                 player->setPosition(Posn{player->getPosition().row + r[i],
-                      player->getPosition().col + c[i]});
+                                         player->getPosition().col + c[i]});
                 player->toggleBarrier();
                 msg = "You moved " + directions[i] + " and picked up the barrier. ";
                 displayGrid[items[j]->getPosition().row][items[j]->getPosition().col] = '.';
@@ -225,7 +203,7 @@ void Game::play() {
       for (int i = 0; i < 8; i++) {
         if (di == movement[i]) {
           Posn potionpos = Posn{player->getPosition().row + r[i],
-                               player->getPosition().col + c[i]};
+                                player->getPosition().col + c[i]};
           for (auto it : items) {
             if (potionpos == it->getPosition() && it->getSymbol() == 'P') {
               if (it->getId() == 0 || it->getId() == 3) {
@@ -276,7 +254,7 @@ void Game::play() {
       continue;
     }
     if (!newLevel) {
-      msg = msg + update(); 
+      msg = msg + update();
     } else {
       newLevel = false;
     }
@@ -316,18 +294,18 @@ string Game::update() {
           for (int j = 0; j < 8; j++) {
             if (en->getItem()->getPosition().row == player->getPosition().row + r[j] &&
                 en->getItem()->getPosition().col == player->getPosition().col + c[j]) {
-                  int hit = randomNum(2);
-                  if (hit == 1) {
-                    int oldHP = player->getHP();
-                    en->attack(player);
-                    if (oldHP != player->getHP()) {
-                      int damage = oldHP - player->getHP();
-                      msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
-                    }
-                  } else {
-                    msg = msg + en->getSymbol() + " missed. ";
-                  }
-                  attacked = true;
+              int hit = randomNum(2);
+              if (hit == 1) {
+                int oldHP = player->getHP();
+                en->attack(player);
+                if (oldHP != player->getHP()) {
+                  int damage = oldHP - player->getHP();
+                  msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+                }
+              } else {
+                msg = msg + en->getSymbol() + " missed. ";
+              }
+              attacked = true;
             }
           }
         } else if (en->getSymbol() == 'M') {
@@ -381,7 +359,7 @@ string Game::update() {
             bool correctMovement = false;
             for (int i = 0; i < 8; i++) {
               if (en->getItem()->getPosition().row + r[i] == en->getPosition().row + r[di] &&
-                en->getItem()->getPosition().col + c[i] == en->getPosition().col + c[di]) {
+                  en->getItem()->getPosition().col + c[i] == en->getPosition().col + c[di]) {
                 correctMovement = true;
                 break;
               }
@@ -411,24 +389,24 @@ string Game::update() {
       for (auto it : items) {
         if (it->getPosition().row == player->getPosition().row + r[i] &&
             it->getPosition().col == player->getPosition().col + c[i] && it->getSymbol() == 'P') {
-              if (player->getknownPotions(it->getId())) {
-                msg = msg + "PC sees a ";
-                if (it->getId() == 0) {
-                  msg = msg + "RH potion. ";
-                } else if (it->getId() == 1) {
-                  msg = msg + "BA potion. ";
-                } else if (it->getId() == 2) {
-                  msg = msg + "BD potion. ";
-                } else if (it->getId() == 3) {
-                  msg = msg + "PH potion. ";
-                } else if (it->getId() == 4) {
-                  msg = msg + "WA potion. ";
-                } else if (it->getId() == 5) {
-                  msg = msg + "WD potion. ";
-                }
-              } else {
-                msg = msg + "PC sees an unknown potion. ";
-              }
+          if (player->getknownPotions(it->getId())) {
+            msg = msg + "PC sees a ";
+            if (it->getId() == 0) {
+              msg = msg + "RH potion. ";
+            } else if (it->getId() == 1) {
+              msg = msg + "BA potion. ";
+            } else if (it->getId() == 2) {
+              msg = msg + "BD potion. ";
+            } else if (it->getId() == 3) {
+              msg = msg + "PH potion. ";
+            } else if (it->getId() == 4) {
+              msg = msg + "WA potion. ";
+            } else if (it->getId() == 5) {
+              msg = msg + "WD potion. ";
+            }
+          } else {
+            msg = msg + "PC sees an unknown potion. ";
+          }
         }
       }
     }
@@ -451,11 +429,11 @@ void Game::generatePlayer(char symbol) {
   int chamber = randomNum(5) + 1;
   Posn posn = randomPosn(chamber);
   if (playerSymbol == 'h') {
-      player = new Human(posn);
+    player = new Human(posn);
   } else if (playerSymbol == 'd') {
-      player = new Dwarf(posn);
+    player = new Dwarf(posn);
   } else if (playerSymbol == 'e') {
-      player = new Elf(posn);
+    player = new Elf(posn);
   } /*else {
       player = new Orc(posn);
   }*/
@@ -548,8 +526,8 @@ void Game::print() {
     }
     cout << endl;
   }
-  cout << "Race: " << player->getRace() << " Gold: " << player->getGold() 
-       << "\t\t\t\t\t\tfloor " << level << endl;
+  cout << "Race: " << player->getRace() << " Gold: " << player->getGold()
+       << "\t\t\t\t\t\tFloor: " << level << endl;
   cout << "HP: " << max(0, player->getHP()) << endl;
   cout << "Atk: " << player->getAtk() << endl;
   cout << "Def: " << player->getDef() << endl;
@@ -614,7 +592,6 @@ void Game::generateItems() {
     displayGrid[dragonPosn.row][dragonPosn.col] = 'D';
   }
 }
-
 
 void Game::restart() {
   for (int i = 0; i < enemies.size(); i++) {

@@ -19,7 +19,7 @@ Merchant::Merchant(Posn p) {
 void Merchant::attack(Character *target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
   if (target->hasBarrier()) {
-    damage = damage / 2;
+    damage = ceil(double(damage) / double(2));
   }
   target->setHP(target->getHP() - damage);
 }

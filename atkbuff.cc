@@ -24,11 +24,6 @@ AtkBuff::~AtkBuff() {}
 int AtkBuff::getAtk() {
     return value + player->getAtk();
 }
-    
-int AtkBuff::getDef() {
-    return player->getDef();
-}
-
 
 bool AtkBuff::getknownPotions(int index) {
     return player->getknownPotions(index);

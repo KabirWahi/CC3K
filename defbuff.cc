@@ -16,13 +16,9 @@ DefBuff::DefBuff(Player* player, string name): Buff{player} {
     if (playerRace == "Elf") {
         value = abs(value);
     }
-}
+} 
 
 DefBuff::~DefBuff() {}
-
-int DefBuff::getAtk() {
-    return player->getAtk();
-}
 
 int DefBuff::getDef() {
     return value + player->getDef();

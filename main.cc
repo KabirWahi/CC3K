@@ -1,9 +1,11 @@
 #include "game.h"
 #include <iostream>
+#include <string>
+#include <fstream>
 
 using namespace std;
 
-int main() {
+int main(int argc, char *argv[]) {
     cout << "Welcome to CC3K!" << endl;
     cout << "Please choose your character:" << endl;
     cout << "Human (h)" << endl;
@@ -17,5 +19,11 @@ int main() {
         cin >> playerSymbol;
     }
     Game game(playerSymbol);
+    if (argc == 2) {
+        string filename = argv[1];
+        game.changeMap(filename);
+    } else {
+        game.changeMap("defaultMap.txt");
+    }
     game.play();
 }
