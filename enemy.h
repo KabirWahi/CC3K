@@ -11,6 +11,8 @@ class Enemy : public Character {
   virtual int getDef() = 0;
   virtual Item * getItem() = 0;
   bool hasBarrier() const override { return false; };
+  virtual bool isHostile() { return true; };
+  virtual void setHostile() {};
 };
 
 #endif  // ENEMY_H

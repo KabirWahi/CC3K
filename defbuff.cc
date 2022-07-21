@@ -27,3 +27,11 @@ int DefBuff::getAtk() {
 int DefBuff::getDef() {
     return value + player->getDef();
 }
+
+bool DefBuff::getknownPotions(int index) {
+    return player->getknownPotions(index);
+}
+
+void DefBuff::toggleknownPotions(int index) {
+    player->toggleknownPotions(index);
+}

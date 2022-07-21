@@ -4,6 +4,8 @@
 
 using namespace std;
 
+bool Merchant::hostile = false;
+
 Merchant::Merchant(Posn p) {
   atk = 70;
   def = 5;
@@ -25,3 +27,7 @@ void Merchant::attack(Character *target) {
 int Merchant::getAtk() { return atk; }
 
 int Merchant::getDef() { return def; }
+
+bool Merchant::isHostile() { return hostile; }
+
+void Merchant::setHostile() { hostile = true; }

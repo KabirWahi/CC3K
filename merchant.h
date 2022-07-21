@@ -9,6 +9,8 @@ class Merchant : public Enemy {
  public:
   Merchant(Posn p);
   void attack(Character *target) override;
+  bool isHostile() override;
+  void setHostile() override;
   int getAtk() override;
   int getDef() override;
   Item *getItem() override { return nullptr; };

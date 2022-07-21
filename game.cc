@@ -34,7 +34,7 @@ int randomNum(int upperBound) {
 
 Game::Game(char playerSymbol)
     : playerSymbol(playerSymbol),
-      level(1),
+      level(5),
       stairVisible(false),
       barrierFloor{randomNum(5) + 1} {
   string map[25] = {
@@ -129,6 +129,7 @@ void Game::play() {
           moved = true;
           player->setPosition(Posn{player->getPosition().row + r[i],
                                    player->getPosition().col + c[i]});
+          displayGrid[player->getPosition().row][player->getPosition().col] = '@';
           if (player->getPosition() == stairPosition) {
             if (level == 5) {
               cout << "congratulations! You have reached the end of the dungeon." << endl;
@@ -209,6 +210,9 @@ void Game::play() {
               msg = "PC deals " + to_string(damage) + " damage to " +
                     en->getSymbol() + " (" + to_string(max(0, en->getHP())) + " HP). ";
               moved = true;
+              if (en->getSymbol() == 'M') {
+                en->setHostile();
+              }
               break;
             }
           }
@@ -223,7 +227,7 @@ void Game::play() {
           Posn potionpos = Posn{player->getPosition().row + r[i],
                                player->getPosition().col + c[i]};
           for (auto it : items) {
-            if (potionpos == it->getPosition()) {
+            if (potionpos == it->getPosition() && it->getSymbol() == 'P') {
               if (it->getId() == 0 || it->getId() == 3) {
                 player->addHealth(it->getValue());
                 if (it->getId() == 0) {
@@ -248,10 +252,11 @@ void Game::play() {
                 player = new DefBuff(player, "WD");
                 msg = "PC picked up a WD potion. ";
               }
-              player->knownPotions[it->getId()] = true;
+              player->toggleknownPotions(it->getId());
               displayGrid[it->getPosition().row][it->getPosition().col] = '.';
               items.erase(remove(items.begin(), items.end(), it), items.end());
               moved = true;
+              cout << it->getId() << endl;
               break;
             }
           }
@@ -325,6 +330,21 @@ string Game::update() {
                   attacked = true;
             }
           }
+        } else if (en->getSymbol() == 'M') {
+          if (en->isHostile()) {
+            int hit = randomNum(2);
+            if (hit == 1) {
+              int oldHP = player->getHP();
+              en->attack(player);
+              if (oldHP != player->getHP()) {
+                int damage = oldHP - player->getHP();
+                msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
+              }
+            } else {
+              msg = msg + en->getSymbol() + " missed. ";
+            }
+            attacked = true;
+          }
         } else {
           int hit = randomNum(2);
           if (hit == 1) {
@@ -390,8 +410,8 @@ string Game::update() {
     if (displayGrid[player->getPosition().row + r[i]][player->getPosition().col + c[i]] == 'P') {
       for (auto it : items) {
         if (it->getPosition().row == player->getPosition().row + r[i] &&
-            it->getPosition().col == player->getPosition().col + c[i]) {
-              if (player->knownPotions[it->getId()]) {
+            it->getPosition().col == player->getPosition().col + c[i] && it->getSymbol() == 'P') {
+              if (player->getknownPotions(it->getId())) {
                 msg = msg + "PC sees a ";
                 if (it->getId() == 0) {
                   msg = msg + "RH potion. ";
@@ -499,18 +519,17 @@ void Game::nextLevel() {
   int HP = player->getHP();
   int Gold = player->getGold();
   bool hasBarrier = player->hasBarrier();
-  bool KnownPotions[6] = {player->knownPotions[0], player->knownPotions[1], player->knownPotions[2],
-                          player->knownPotions[3], player->knownPotions[4], player->knownPotions[5]};
+  bool KnownPotions[6] = {player->getknownPotions(0), player->getknownPotions(1), player->getknownPotions(2),
+                          player->getknownPotions(3), player->getknownPotions(4), player->getknownPotions(5)};
   delete player;
   init();
   player->setHP(HP);
   player->setGold(Gold);
-  player->knownPotions[0] = KnownPotions[0];
-  player->knownPotions[1] = KnownPotions[1];
-  player->knownPotions[2] = KnownPotions[2];
-  player->knownPotions[3] = KnownPotions[3];
-  player->knownPotions[4] = KnownPotions[4];
-  player->knownPotions[5] = KnownPotions[5];
+  for (int i = 0; i < 6; i++) {
+    if (KnownPotions[i]) {
+      player->toggleknownPotions(i);
+    }
+  }
   if (hasBarrier) {
     player->toggleBarrier();
   }
@@ -556,7 +575,7 @@ void Game::generateItems() {
       posn = randomPosn(chamber);
     }
     int type = randomNum(6);  // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
-    items.emplace_back(new Potion(0 + type, posn));
+    items.emplace_back(new Potion(type, posn));
     displayGrid[posn.row][posn.col] = 'P';
   }
   int numGolds = 10;

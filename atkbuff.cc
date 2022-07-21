@@ -28,3 +28,12 @@ int AtkBuff::getAtk() {
 int AtkBuff::getDef() {
     return player->getDef();
 }
+
+
+bool AtkBuff::getknownPotions(int index) {
+    return player->getknownPotions(index);
+}
+
+void AtkBuff::toggleknownPotions(int index) {
+    player->toggleknownPotions(index);
+}

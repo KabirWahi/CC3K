@@ -3,9 +3,6 @@
 #include "player.h"
 
 class Human : public Player {
- protected:
-  int maxHP = 140;
-
  public:
   Human(Posn p);
 };

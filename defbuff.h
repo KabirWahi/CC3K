@@ -11,6 +11,8 @@ class DefBuff: public Buff {
     virtual ~DefBuff();
     int getAtk() override;
     int getDef() override;
+    virtual bool getknownPotions(int index) override;
+    virtual void toggleknownPotions(int index) override;
 };
 
 #endif

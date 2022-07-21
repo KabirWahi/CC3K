@@ -16,12 +16,20 @@ void Player::addGold(int amount) {
 }
 
 void Player::addHealth(int amount) {
-    HP = max(0, min(HP + amount, maxHP));
+    setHP(min(getHP() + amount, maxHP));
 }
 
 void Player::attack(Character *target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * getAtk());
   target->setHP(target->getHP() - damage);
+}
+
+bool Player::getknownPotions(int index) {
+    return knownPotions[index];
+}
+
+void Player::toggleknownPotions(int index) {
+    knownPotions[index] = true;
 }
 
 Player::~Player() {}

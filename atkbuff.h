@@ -10,6 +10,8 @@ class AtkBuff: public Buff {
     virtual ~AtkBuff();
     int getAtk() override;
     int getDef() override;
+    virtual bool getknownPotions(int index) override;
+    virtual void toggleknownPotions(int index) override;
 };
 
 #endif
