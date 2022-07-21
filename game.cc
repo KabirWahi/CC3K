@@ -61,7 +61,6 @@ void Game::init() {
     chamber = randomNum(5) + 1;
   }
   stairPosition = randomPosn(chamber);
-  stairPosition = Posn{3, 3};
   displayGrid[stairPosition.row][stairPosition.col] = '\\';
   generateItems();
   generateEnemies();
@@ -112,6 +111,11 @@ void Game::play() {
           player->setPosition(Posn{player->getPosition().row + r[i],
                                    player->getPosition().col + c[i]});
           if (player->getPosition() == stairPosition) {
+            if (level == 5) {
+              cout << "congratulations! You have reached the end of the dungeon." << endl;
+              cout << "Your score is " << player->getGold() << "." << endl;
+              return;
+            }
             nextLevel();
             newLevel = true;
             msg = "You found the stairs! Welcome to the next floor!";
@@ -235,6 +239,11 @@ void Game::play() {
         }
       }
     }
+    if (input == "r") {
+      restart();
+      moved = true;
+      msg = "You have restarted the game. Welcome to the dungeon!";
+    }
     if (input == "q") {
       break;
     }
@@ -316,34 +325,45 @@ string Game::update() {
     if (attacked) {
       continue;
     }
-    int di = randomNum(8);
-    while (!moved) {
-      if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
-        if (en->getSymbol() == 'D') {
-          bool correctMovement = false;
-          for (int i = 0; i < 8; i++) {
-            if (en->getItem()->getPosition().row + r[i] == en->getPosition().row + r[di] &&
+    bool canMove = false;
+    for (int i = 0; i < 8; i++) {
+      Posn enemypos = Posn{en->getPosition().row + r[i],
+                           en->getPosition().col + c[i]};
+      if (displayGrid[enemypos.row][enemypos.col] == '.') {
+        canMove = true;
+        break;
+      }
+    }
+    if (canMove) {
+      int di = randomNum(8);
+      while (!moved) {
+        if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
+          if (en->getSymbol() == 'D') {
+            bool correctMovement = false;
+            for (int i = 0; i < 8; i++) {
+              if (en->getItem()->getPosition().row + r[i] == en->getPosition().row + r[di] &&
                 en->getItem()->getPosition().col + c[i] == en->getPosition().col + c[di]) {
-              correctMovement = true;
-              break;
+                correctMovement = true;
+                break;
+              }
             }
-          }
-          if (correctMovement) {
+            if (correctMovement) {
+              displayGrid[en->getPosition().row][en->getPosition().col] = '.';
+              en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
+              displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+              moved = true;
+            } else {
+              di = randomNum(8);
+            }
+          } else {
             displayGrid[en->getPosition().row][en->getPosition().col] = '.';
             en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
             displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
             moved = true;
-          } else {
-            di = randomNum(8);
           }
         } else {
-          displayGrid[en->getPosition().row][en->getPosition().col] = '.';
-          en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
-          displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
-          moved = true;
+          di = randomNum(8);
         }
-      } else {
-        di = randomNum(8);
       }
     }
   }
@@ -513,6 +533,9 @@ void Game::generateItems() {
   for (int i = 0; i < numPotions; i++) {
     int chamber = randomNum(5) + 1;
     Posn posn = randomPosn(chamber);
+    while (neighborHasPlayer(posn)) {
+      posn = randomPosn(chamber);
+    }
     int type = randomNum(6);  // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
     items.emplace_back(new Potion(0 + type, posn));
     displayGrid[posn.row][posn.col] = 'P';
@@ -521,6 +544,9 @@ void Game::generateItems() {
   for (int i = 0; i < numGolds; i++) {
     int chamber = randomNum(5) + 1;
     Posn posn = randomPosn(chamber);
+    while (neighborHasPlayer(posn)) {
+      posn = randomPosn(chamber);
+    }
     int type = randomNum(8);  // 0-4 normal gold,  5-6 small hoard, 7 dragon hoard
     if (type <= 4) {
       items.emplace_back(new Gold(6, posn));
@@ -539,6 +565,9 @@ void Game::generateItems() {
   if (getLevel() == barrierFloor) {
     int chamber = randomNum(5) + 1;
     Posn posn = randomPosn(chamber);
+    while (neighborHasPlayer(posn)) {
+      posn = randomPosn(chamber);
+    }
     BarrierSuit *bar = new BarrierSuit(posn);
     items.emplace_back(bar);
     displayGrid[posn.row][posn.col] = 'B';
@@ -546,4 +575,35 @@ void Game::generateItems() {
     enemies.push_back(new Dragon(dragonPosn, bar));
     displayGrid[dragonPosn.row][dragonPosn.col] = 'D';
   }
+}
+
+
+void Game::restart() {
+  for (int i = 0; i < enemies.size(); i++) {
+    delete enemies[i];
+  }
+  enemies.clear();
+  for (int i = 0; i < items.size(); i++) {
+    delete items[i];
+  }
+  items.clear();
+  delete player;
+  cout << "Welcome to CC3K!" << endl;
+  cout << "Please choose your character:" << endl;
+  cout << "Human (h)" << endl;
+  cout << "Dwarf (d)" << endl;
+  cout << "Elf (e)" << endl;
+  cout << "Orc (o)" << endl;
+  char Symbol;
+  cin >> Symbol;
+  while (Symbol != 'h' && Symbol != 'd' && Symbol != 'e' && Symbol != 'o') {
+    cout << "Invalid character. Please try again." << endl;
+    cin >> Symbol;
+  }
+  playerSymbol = Symbol;
+  displayGrid = defaultMap;
+  level = 1;
+  stairVisible = false;
+  barrierFloor = randomNum(5) + 1;
+  init();
 }

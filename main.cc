@@ -3,12 +3,19 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
-    char r = 'h';
-    if (argc != 1 && (*argv[1] == 'e' || *argv[1] == 'h' || *argv[1] == 'd' || *argv[1] == 'o')) {
-        r = *argv[1];
+int main() {
+    cout << "Welcome to CC3K!" << endl;
+    cout << "Please choose your character:" << endl;
+    cout << "Human (h)" << endl;
+    cout << "Dwarf (d)" << endl;
+    cout << "Elf (e)" << endl;
+    cout << "Orc (o)" << endl;
+    char playerSymbol;
+    cin >> playerSymbol;
+    while (playerSymbol != 'h' && playerSymbol != 'd' && playerSymbol != 'e' && playerSymbol != 'o') {
+        cout << "Invalid character. Please try again." << endl;
+        cin >> playerSymbol;
     }
-    Game game(r);
+    Game game(playerSymbol);
     game.play();
-    return 0;
 }
