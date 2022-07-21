@@ -10,6 +10,7 @@ class Enemy : public Character {
   virtual int getAtk() = 0;
   virtual int getDef() = 0;
   virtual Item * getItem() = 0;
+  bool hasBarrier() const override { return false; };
 };
 
 #endif  // ENEMY_H

@@ -32,7 +32,7 @@ class Character {
   virtual void setGold(int gold);              // set gold
   virtual void setAtk(int atk);                // set atk
   virtual void setDef(int def);                // set def
-  virtual bool hasBarrier();                   // return barrier
+  virtual bool hasBarrier() const = 0;         // return barrier
 };
 
 #endif  // CHARACTER_H

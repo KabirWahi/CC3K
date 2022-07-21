@@ -6,6 +6,5 @@ class Vampire : public Enemy {
   void attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
-  bool hasBarrier() const override { return false; };
   Item *getItem() override { return nullptr; };
 };

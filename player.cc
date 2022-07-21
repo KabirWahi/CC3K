@@ -20,7 +20,7 @@ void Player::addHealth(int amount) {
 }
 
 void Player::attack(Character *target) {
-  int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
+  int damage = ceil(double(100) / double(100 + target->getDef()) * getAtk());
   target->setHP(target->getHP() - damage);
 }
 

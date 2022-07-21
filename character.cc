@@ -8,11 +8,11 @@ using namespace std;
 Character::~Character() {}
 
 int Character::getAtk() {
-  return atk;
+  return max(0, atk);
 }
 
 int Character::getDef() {
-  return def;
+  return max(0, def);
 }
 
 int Character::getHP() {

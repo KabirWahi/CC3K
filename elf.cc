@@ -5,6 +5,12 @@
 using namespace std;
 
 Elf::Elf(Posn p) {
+  knownPotions[0] = false;
+  knownPotions[1] = false;
+  knownPotions[2] = false;
+  knownPotions[3] = false;
+  knownPotions[4] = false;
+  knownPotions[5] = false;
   atk = 30;
   def = 10;
   HP = maxHP;

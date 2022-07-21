@@ -222,20 +222,31 @@ void Game::play() {
             if (potionpos == it->getPosition()) {
               if (it->getId() == 0 || it->getId() == 3) {
                 player->addHealth(it->getValue());
+                if (it->getId() == 0) {
+                  msg = "PC picked up a RH potion. ";
+                } else {
+                  msg = "PC picked up a PH potion. ";
+                }
               }
               if (it->getId() == 1) {
                 player = new AtkBuff(player, "BA");
+                msg = "PC picked up a BA potion. ";
               }
               if (it->getId() == 2) {
                 player = new DefBuff(player, "BD");
+                msg = "PC picked up a BD potion. ";
               }
               if (it->getId() == 4) {
                 player = new AtkBuff(player, "WA");
+                msg = "PC picked up a WA potion. ";
               }
               if (it->getId() == 5) {
                 player = new DefBuff(player, "WD");
+                msg = "PC picked up a WD potion. ";
               }
-              msg = "PC picked up a potion. ";
+              player->knownPotions[it->getId()] = true;
+              displayGrid[it->getPosition().row][it->getPosition().col] = '.';
+              items.erase(remove(items.begin(), items.end(), it), items.end());
               moved = true;
               break;
             }
@@ -355,6 +366,33 @@ string Game::update() {
       }
     }
   }
+  for (int i = 0; i < 8; i++) {
+    if (displayGrid[player->getPosition().row + r[i]][player->getPosition().col + c[i]] == 'P') {
+      for (auto it : items) {
+        if (it->getPosition().row == player->getPosition().row + r[i] &&
+            it->getPosition().col == player->getPosition().col + c[i]) {
+              if (player->knownPotions[it->getId()]) {
+                msg = msg + "PC sees a ";
+                if (it->getId() == 0) {
+                  msg = msg + "RH potion. ";
+                } else if (it->getId() == 1) {
+                  msg = msg + "BA potion. ";
+                } else if (it->getId() == 2) {
+                  msg = msg + "BD potion. ";
+                } else if (it->getId() == 3) {
+                  msg = msg + "PH potion. ";
+                } else if (it->getId() == 4) {
+                  msg = msg + "WA potion. ";
+                } else if (it->getId() == 5) {
+                  msg = msg + "WD potion. ";
+                }
+              } else {
+                msg = msg + "PC sees an unknown potion. ";
+              }
+        }
+      }
+    }
+  }
   displayGrid = defaultMap;
   displayGrid[player->getPosition().row][player->getPosition().col] = '@';
   for (auto en : enemies) {
@@ -372,7 +410,6 @@ string Game::update() {
 void Game::generatePlayer(char symbol) {
   int chamber = randomNum(5) + 1;
   Posn posn = randomPosn(chamber);
-  player = new Human(posn);
   if (playerSymbol == 'h') {
       player = new Human(posn);
   } else if (playerSymbol == 'd') {
@@ -442,10 +479,18 @@ void Game::nextLevel() {
   int HP = player->getHP();
   int Gold = player->getGold();
   bool hasBarrier = player->hasBarrier();
+  bool KnownPotions[6] = {player->knownPotions[0], player->knownPotions[1], player->knownPotions[2],
+                          player->knownPotions[3], player->knownPotions[4], player->knownPotions[5]};
   delete player;
   init();
   player->setHP(HP);
   player->setGold(Gold);
+  player->knownPotions[0] = KnownPotions[0];
+  player->knownPotions[1] = KnownPotions[1];
+  player->knownPotions[2] = KnownPotions[2];
+  player->knownPotions[3] = KnownPotions[3];
+  player->knownPotions[4] = KnownPotions[4];
+  player->knownPotions[5] = KnownPotions[5];
   if (hasBarrier) {
     player->toggleBarrier();
   }

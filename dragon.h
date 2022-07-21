@@ -13,7 +13,6 @@ class Dragon : public Enemy {
   int getAtk() override;
   int getDef() override;
   Item * getItem() override;
-  bool hasBarrier() const override { return false; };
 };
 
 #endif  // DRAGON_H
