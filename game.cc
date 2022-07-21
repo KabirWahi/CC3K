@@ -34,7 +34,7 @@ int randomNum(int upperBound) {
 
 Game::Game(char playerSymbol)
     : playerSymbol(playerSymbol),
-      level(4),
+      level(1),
       stairVisible(false),
       barrierFloor{randomNum(5) + 1} {
   string map[25] = {
