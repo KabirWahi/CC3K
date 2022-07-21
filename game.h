@@ -26,17 +26,16 @@ class Game {
   std::vector<std::vector<char>> defaultMap;
   std::vector<std::vector<char>> displayGrid;
   char playerSymbol;
-  Game(char playerSymbol);    // constructor
+  Game(char playerSymbol, std::string filename);    // constructor
   ~Game();                    // destructor
-  void play();                // play game
+  void play(int number);      // play game
   void print();               // print displayGrid
   std::string update();       // update displayGrid
   Player *getPlayer();        // return player pointer
   Posn getStairs();           // return stairs position
   int getLevel();             // return level
-  void init();                // initialize game
+  void init(int number);      // initialize game
   void nextLevel();           // go to next level
-  void restart();             // restart game
   bool neighborHasPlayer(Posn posn); // return true if neighbor has player
 };
 

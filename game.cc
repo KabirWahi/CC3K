@@ -33,38 +33,59 @@ int randomNum(int upperBound) {
   return v[0];
 }
 
-Game::Game(char playerSymbol)
+Game::Game(char playerSymbol, string filename)
     : playerSymbol(playerSymbol),
       level(1),
       stairVisible(false),
       barrierFloor{randomNum(5) + 1} {
   string map;
-  fstream file{"floor"};
+  fstream file{filename};
   string s;
   while (getline(file,s)) {
-        map.append(s);
+  	map.append(s);
   }
-
   for (int i = 0; i < 25; i++) {
-    defaultMap.push_back(vector<char>());
+    displayGrid.push_back(vector<char>());
     for (int j = 0; j < 79; j++) {
-      defaultMap[i].push_back(map[i*79+j]);
+      displayGrid[i].push_back(map[i*79+j]);
     }
   }
-  displayGrid = defaultMap;
+  defaultMap = displayGrid;
 }
 
-void Game::init() {
-  generatePlayer(playerSymbol);
-  int chamber = randomNum(5) + 1;
-  while (chamber == player->getPosition().whichChamber()) {
-    chamber = randomNum(5) + 1;
+void Game::init(int number) {
+  if (number == 1) {
+    generatePlayer(playerSymbol);
+    int chamber = randomNum(5) + 1;
+    while (chamber == player->getPosition().whichChamber()) {
+      chamber = randomNum(5) + 1;
+    }
+    stairPosition = randomPosn(chamber);
+    stairPosition = Posn{3, 3};
+    displayGrid[stairPosition.row][stairPosition.col] = '\\';
+    generateItems();
+    generateEnemies();
+    displayGrid[stairPosition.row][stairPosition.col] = '.';
+  } else {
+    for (int i = 0; i < 25; i++) {
+    	for (int j = 0; j < 79; j++) {
+	  char c = displayGrid[i][j];
+	  if (c != '.' && c != '|' && c != '#' && c != ' ' && c != '-' && c != '+') {
+	  	defaultMap[i][j] = '.';
+	  }
+	  if (c >= '0' && c <= '5') {
+	       items.push_back(new Potion(0,Posn{i,j}));
+	  } else if (c == 'D' || c == 'M' || c == 'N' || c == 'T' || c == 'V' || c == 'W' || c == 'X') {
+	  	enemies.push_back(new Goblin(Posn{i,j}));//TODO
+	  } else if (c >= '6' && c <= '9') {
+	  	items.push_back(new Gold(6,Posn{i,j}));//TODO
+	  } else if (c == '@') {
+	  	player = new Human(Posn{i,j});//TODO
+	  } else {}
+	  
+	}
+    }
   }
-  stairPosition = randomPosn(chamber);
-  displayGrid[stairPosition.row][stairPosition.col] = '\\';
-  generateItems();
-  generateEnemies();
-  displayGrid[stairPosition.row][stairPosition.col] = '.';
 }
 
 Posn Game::randomPosn(int chamber) {
@@ -94,8 +115,8 @@ Posn Game::randomNeighbour(Posn posn) {
   return Posn{row, col};
 }
 
-void Game::play() {
-  init();
+void Game::play(int number) {
+  init(number);
   print();
   cout << "PC has spawned in the dungeon." << endl;
   string input;
@@ -483,7 +504,7 @@ void Game::nextLevel() {
   bool KnownPotions[6] = {player->knownPotions[0], player->knownPotions[1], player->knownPotions[2],
                           player->knownPotions[3], player->knownPotions[4], player->knownPotions[5]};
   delete player;
-  init();
+  init(1);
   player->setHP(HP);
   player->setGold(Gold);
   player->knownPotions[0] = KnownPotions[0];
