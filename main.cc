@@ -1,3 +1,8 @@
+#include "game.h"
+#include <iostream>
+
+using namespace std;
+
 int main() {
     cout << "Welcome to CC3K!" << endl;
     cout << "Please choose map: 1.randomly generated, 2.test files." << endl;
