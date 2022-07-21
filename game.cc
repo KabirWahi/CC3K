@@ -626,5 +626,5 @@ void Game::restart() {
   level = 1;
   stairVisible = false;
   barrierFloor = randomNum(5) + 1;
-  init();
+  init(1);
 }
