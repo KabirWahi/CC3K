@@ -136,7 +136,7 @@ void Game::play() {
                 player->setPosition(Posn{player->getPosition().row + r[i],
                                          player->getPosition().col + c[i]});
                 int gold = items[j]->getValue();
-                player->setGold(player->getGold() + gold);
+                player->addGold(gold);
                 msg = "You moved " + directions[i] + " and picked up " +
                       to_string(gold) + " gold. ";
                 displayGrid[items[j]->getPosition().row][items[j]->getPosition().col] = '.';
