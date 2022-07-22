@@ -444,9 +444,9 @@ void Game::generatePlayer(char symbol) {
     player = new Dwarf(posn);
   } else if (playerSymbol == 'e') {
     player = new Elf(posn);
-  } /*else {
+  } else {
       player = new Orc(posn);
-  }*/
+  }
   displayGrid[posn.row][posn.col] = '@';
 }
 

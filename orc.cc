@@ -12,5 +12,5 @@ Orc::Orc(Posn p) {
 }
 
 void Orc::addGold(int amount) {
-    gold += ceil((amount / 2));
+    gold += ceil(double(amount) / double(2));
 }
