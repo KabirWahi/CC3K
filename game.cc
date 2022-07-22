@@ -47,6 +47,8 @@ void Game::changeMap(string filename) {
     }
   }
   displayGrid = defaultMap;
+  file.close();
+  mapPosns = mapDetection(map);
 }
 
 Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1),
@@ -66,12 +68,15 @@ void Game::init() {
 }
 
 Posn Game::randomPosn(int chamber) {
-  int row = randomNum(25);
-  int col = randomNum(79);
-  while (displayGrid[row][col] != '.' ||
-         (Posn{row, col}).whichChamber() != chamber) {
-    row = randomNum(25);
-    col = randomNum(79);
+  chamber--;
+  int sz = mapPosns[chamber].size();
+  int r = randomNum(sz);
+  int row = mapPosns[chamber][r].first;
+  int col = mapPosns[chamber][r].second;
+  while (displayGrid[row][col] != '.') {
+    r = randomNum(sz);
+    row = mapPosns[chamber][r].first;
+    col = mapPosns[chamber][r].second;
   }
   return Posn{row, col};
 }

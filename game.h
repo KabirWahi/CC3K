@@ -12,6 +12,7 @@ class Game {
   Player *player;
   std::vector<Enemy *> enemies;
   std::vector<Item *> items;
+  std::vector<std::vector<std::pair<int, int>>> mapPosns;
   Posn stairPosition;
   bool stairVisible;
   int level;

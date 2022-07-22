@@ -15,3 +15,4 @@
 #include "atkbuff.h"
 #include "dwarf.h"
 #include "elf.h"
+#include "mapDetection.h"
