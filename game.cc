@@ -135,10 +135,9 @@ void Game::play() {
                 moved = true;
                 player->setPosition(Posn{player->getPosition().row + r[i],
                                          player->getPosition().col + c[i]});
-                int gold = items[j]->getValue();
-                player->addGold(gold);
+                player->addGold(items[j]->getValue());
                 msg = "You moved " + directions[i] + " and picked up " +
-                      to_string(gold) + " gold. ";
+                      to_string(items[j]->getValue()) + " gold. ";
                 displayGrid[items[j]->getPosition().row][items[j]->getPosition().col] = '.';
                 items.erase(remove(items.begin(), items.end(), items[j]), items.end());
                 break;
@@ -279,7 +278,7 @@ string Game::update() {
     bool moved = false;
     bool attacked = false;
     if (en->getHP() <= 0) {
-      player->setGold(player->getGold() + en->getGold());
+      player->addGold(en->getGold());
       msg = msg + "You slained " + (en->getSymbol()) + " and got " +
             to_string(en->getGold()) + " gold. ";
       if (en->compass) {
@@ -375,7 +374,7 @@ string Game::update() {
               displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
               moved = true;
             } else {
-              di = randomNum(8);
+              moved = true;
             }
           } else {
             displayGrid[en->getPosition().row][en->getPosition().col] = '.';
