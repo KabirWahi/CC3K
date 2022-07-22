@@ -1,3 +1,5 @@
+#ifndef VAMPIRE_H
+#define VAMPIRE_H
 #include "enemy.h"
 
 class Vampire : public Enemy {
@@ -8,3 +10,5 @@ class Vampire : public Enemy {
   int getDef() override;
   Item *getItem() override { return nullptr; };
 };
+
+#endif  // VAMPIRE_H

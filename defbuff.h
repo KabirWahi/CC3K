@@ -8,7 +8,6 @@
 class DefBuff: public Buff {
     public:
     DefBuff(Player* player, std::string name);
-    virtual ~DefBuff();
     int getDef() override;
     virtual bool getknownPotions(int index) override;
     virtual void toggleknownPotions(int index) override;

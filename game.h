@@ -14,6 +14,7 @@ class Game {
   std::vector<Item *> items;
   std::vector<std::vector<std::pair<int, int>>> mapPosns;
   Posn stairPosition;
+  int playerStartChamber;
   bool stairVisible;
   int level;
   int barrierFloor;

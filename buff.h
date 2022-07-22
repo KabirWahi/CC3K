@@ -12,7 +12,7 @@ class Buff : public Player {
 
  public:
   Buff(Player* player);
-  ~Buff() override;
+  virtual ~Buff();
   int getAtk() override;
   int getDef() override;
   void attack(Character* target) override;

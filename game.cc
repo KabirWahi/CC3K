@@ -56,7 +56,7 @@ Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1), stairVisib
 void Game::init() {
   generatePlayer(playerSymbol);
   int chamber = randomNum(5) + 1;
-  while (chamber == player->getPosition().whichChamber()) {
+  while (chamber == playerStartChamber) {
     chamber = randomNum(5) + 1;
   }
   stairPosition = randomPosn(chamber);
@@ -264,8 +264,10 @@ void Game::play() {
     print();
     cout << msg << endl;
     if (player->getHP() <= 0) {
-      cout << "You died :( Press [r] to play again. " << endl;
-      continue;
+      const std::string BOLD = "\033[1m";
+      const std::string RESET = "\033[0m";
+      cout << BOLD << "You died :( Your score is " << player->getGold() << endl;
+      break;
     }
   }
 }
@@ -280,6 +282,7 @@ string Game::update() {
       if (en->getSymbol() == 'M') {
         items.emplace_back(new Gold(8, en->getPosition()));
         msg = "You killed the merchant and found a merchant hoard. ";
+        cout << items[items.size() - 1]->getValue() << endl;
         displayGrid[en->getPosition().row][en->getPosition().col] = 'G';
       } else {
         player->addGold(en->getGold());
@@ -437,6 +440,7 @@ string Game::update() {
 
 void Game::generatePlayer(char symbol) {
   int chamber = randomNum(5) + 1;
+  playerStartChamber = chamber;
   Posn posn = randomPosn(chamber);
   if (playerSymbol == 'h') {
     player = new Human(posn);
@@ -530,18 +534,44 @@ Player *Game::getPlayer() { return player; }
 Posn Game::getStairs() { return stairPosition; }
 
 void Game::print() {
+  const std::string GREEN = "\033[1;32m";
+  const std::string RED = "\033[1;31m";
+  const std::string BLUE = "\033[1;34m";
+  const std::string PURPLE = "\033[1;35m";
+  const std::string CYAN = "\033[1;36m";
+  const std::string GOLDEN = "\033[1;33m";
+  const std::string RESET =  "\033[0m";
+  const std::string BOLD = "\033[1m";
+  
   for (int i = 0; i < 25; i++) {
     for (int j = 0; j < 79; j++) {
-      cout << displayGrid[i][j];
+      if (displayGrid[i][j] == '@' || displayGrid[i][j] == '\\') {
+        cout << GREEN << displayGrid[i][j] << RESET;
+      } else if (displayGrid[i][j] == 'W' || displayGrid[i][j] == 'V' || displayGrid[i][j] == 'N' ||
+                 displayGrid[i][j] == 'T' || displayGrid[i][j] == 'X' || displayGrid[i][j] == 'M' || displayGrid[i][j] == 'D') {
+        cout << RED << displayGrid[i][j] << RESET;
+      } else if (displayGrid[i][j] == '#' || displayGrid[i][j] == '+' || displayGrid[i][j] == '|' || displayGrid[i][j] == '-') {
+        cout << BLUE << displayGrid[i][j] << RESET;
+      } else if (displayGrid[i][j] == 'G' || displayGrid[i][j] == 'C' || displayGrid[i][j] == 'B') {
+        cout << GOLDEN << displayGrid[i][j] << RESET;
+      } else if (displayGrid[i][j] == 'P') {
+        cout << PURPLE << displayGrid[i][j] << RESET;
+      } else if (displayGrid[i][j] == '.') {
+        cout << CYAN << displayGrid[i][j] << RESET;
+      } else {
+        cout << displayGrid[i][j];
+      }
     }
     cout << endl;
   }
+  cout << BOLD;
   cout << "Race: " << player->getRace() << " Gold: " << player->getGold()
        << "\t\t\t\t\t\tFloor: " << level << endl;
   cout << "HP: " << max(0, player->getHP()) << endl;
   cout << "Atk: " << player->getAtk() << endl;
   cout << "Def: " << player->getDef() << endl;
   cout << "Action: ";
+  cout << RESET;
 }
 
 Game::~Game() {
@@ -552,6 +582,12 @@ Game::~Game() {
     delete items[i];
   }
   delete player;
+  for (int i = 0; i < defaultMap.size(); i++) {
+    defaultMap[i].clear();
+    displayGrid[i].clear();
+  }
+  defaultMap.clear();
+  displayGrid.clear();
 }
 
 void Game::generateItems() {
@@ -613,6 +649,9 @@ void Game::restart() {
   }
   items.clear();
   delete player;
+  const std::string BOLD = "\033[1m";
+  const std::string RESET =  "\033[0m";
+  cout << BOLD;
   cout << "Welcome to CC3K!" << endl;
   cout << "Please choose your character:" << endl;
   cout << "Human (h)" << endl;
@@ -630,5 +669,6 @@ void Game::restart() {
   level = 1;
   stairVisible = false;
   barrierFloor = randomNum(5) + 1;
+  cout << RESET;
   init();
 }

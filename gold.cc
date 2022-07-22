@@ -9,13 +9,13 @@ Gold::Gold(int id, Posn position): Item{id, position} {
     if (id == 6) {
         value = 1;
         name = "Normal";
-    } else if (id = 7) {
+    } else if (id == 7) {
         value = 2;
         name = "SmallHoard";
-    } else if (id = 8) {
+    } else if (id == 8) {
         value = 4;
-        name == "MerchantHoard";
-    } else {}
+        name = "MerchantHoard";
+    }
 }
 
 Gold::~Gold() {}

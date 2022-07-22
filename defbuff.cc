@@ -18,7 +18,6 @@ DefBuff::DefBuff(Player* player, string name): Buff{player} {
     }
 } 
 
-DefBuff::~DefBuff() {}
 
 int DefBuff::getDef() {
     return value + player->getDef();

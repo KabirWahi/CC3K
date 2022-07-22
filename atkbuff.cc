@@ -19,7 +19,6 @@ AtkBuff::AtkBuff(Player* player, string name): Buff{player} {
     }
 }
 
-AtkBuff::~AtkBuff() {}
 
 int AtkBuff::getAtk() {
     return value + player->getAtk();
