@@ -4,12 +4,12 @@
 
 #include <algorithm>
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <random>
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <fstream>
 
 #include "depends.h"
 
@@ -51,8 +51,7 @@ void Game::changeMap(string filename) {
   mapPosns = mapDetection(map);
 }
 
-Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1),
-                                stairVisible(false), barrierFloor{randomNum(5) + 1} {}
+Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1), stairVisible(false), barrierFloor{randomNum(5) + 1} {}
 
 void Game::init() {
   generatePlayer(playerSymbol);
@@ -265,8 +264,8 @@ void Game::play() {
     print();
     cout << msg << endl;
     if (player->getHP() <= 0) {
-      cout << "You died :( " << endl;
-      break;
+      cout << "You died :( Press [r] to play again. " << endl;
+      continue;
     }
   }
 }
@@ -278,9 +277,16 @@ string Game::update() {
     bool moved = false;
     bool attacked = false;
     if (en->getHP() <= 0) {
-      player->addGold(en->getGold());
-      msg = msg + "You slained " + (en->getSymbol()) + " and got " +
-            to_string(en->getGold()) + " gold. ";
+      if (en->getSymbol() == 'M') {
+        items.emplace_back(new Gold(8, en->getPosition()));
+        msg = "You killed the merchant and found a merchant hoard. ";
+        displayGrid[en->getPosition().row][en->getPosition().col] = 'G';
+      } else {
+        player->addGold(en->getGold());
+        msg = msg + "You slained " + (en->getSymbol()) + " and got " +
+              to_string(en->getGold()) + " gold. ";
+        displayGrid[en->getPosition().row][en->getPosition().col] = '.';
+      }
       if (en->compass) {
         items.emplace_back(new Compass(en->getPosition()));
       }
