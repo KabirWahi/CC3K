@@ -40,24 +40,50 @@ void Game::changeMap(string filename) {
   while (getline(file, line)) {
     map.push_back(line);
   }
-  for (int i = 0; i < 25; i++) {
-    defaultMap.push_back(vector<char>());
-    for (int j = 0; j < 79; j++) {
-      defaultMap[i].push_back(map[i][j]);
+  h = map.size();
+  w = map[0].size();
+  for (int i = 0; i < h; i++) {
+    originalMap.push_back(vector<char>());
+    for (int j = 0; j < w; j++) {
+      originalMap[i].push_back(map[i][j]);
     }
   }
+  defaultMap = originalMap;
   displayGrid = defaultMap;
   file.close();
   mapPosns = mapDetection(map);
+  chamberCount = mapPosns.size();
 }
 
-Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1), stairVisible(false), barrierFloor{randomNum(5) + 1} {}
+Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1), stairVisible(false), barrierFloor{randomNum(chamberCount) + 1} {}
 
 void Game::init() {
+  for (int i = 0; i < defaultMap.size(); i++) {
+    for (int j = 0; j < defaultMap[i].size(); j++) {
+      if ('0' <= defaultMap[i][j] && defaultMap[i][j] <= '5') {
+        items.emplace_back(new Potion(defaultMap[i][j] - '0', Posn{i, j}));
+        defaultMap[i][j] = '.';
+        displayGrid[i][j] = 'P';
+      } else if ('6' <= defaultMap[i][j] && defaultMap[i][j] <= '8') {
+        items.emplace_back(new Gold(defaultMap[i][j] - '0', Posn{i, j}));
+        defaultMap[i][j] = '.';
+        displayGrid[i][j] = 'G';
+      } else if (defaultMap[i][j] == '9') {
+        Posn posn = Posn{i, j};
+        Item *item = new DragonHoard(posn);
+        items.emplace_back(item);
+        Posn dragonPosn = randomNeighbour(posn);
+        enemies.push_back(new Dragon(dragonPosn, item));
+        defaultMap[i][j] = '.';
+        displayGrid[i][j] = 'G';
+        displayGrid[dragonPosn.row][dragonPosn.col] = 'D';
+      }
+    }
+  }
   generatePlayer(playerSymbol);
-  int chamber = randomNum(5) + 1;
+  int chamber = randomNum(chamberCount) + 1;
   while (chamber == playerStartChamber) {
-    chamber = randomNum(5) + 1;
+    chamber = randomNum(chamberCount) + 1;
   }
   stairPosition = randomPosn(chamber);
   displayGrid[stairPosition.row][stairPosition.col] = '\\';
@@ -439,7 +465,7 @@ string Game::update() {
 }
 
 void Game::generatePlayer(char symbol) {
-  int chamber = randomNum(5) + 1;
+  int chamber = randomNum(chamberCount) + 1;
   playerStartChamber = chamber;
   Posn posn = randomPosn(chamber);
   if (playerSymbol == 'h') {
@@ -466,7 +492,7 @@ bool Game::neighborHasPlayer(Posn posn) {
 void Game::generateEnemies() {
   int numEnemies = 20 - enemies.size();
   for (int i = 0; i < numEnemies; i++) {
-    int chamber = randomNum(5) + 1;
+    int chamber = randomNum(chamberCount) + 1;
     Posn posn = randomPosn(chamber);
     while (neighborHasPlayer(posn)) {
       posn = randomPosn(chamber);
@@ -543,8 +569,8 @@ void Game::print() {
   const std::string RESET =  "\033[0m";
   const std::string BOLD = "\033[1m";
   
-  for (int i = 0; i < 25; i++) {
-    for (int j = 0; j < 79; j++) {
+  for (int i = 0; i < h; i++) {
+    for (int j = 0; j < w; j++) {
       if (displayGrid[i][j] == '@' || displayGrid[i][j] == '\\') {
         cout << GREEN << displayGrid[i][j] << RESET;
       } else if (displayGrid[i][j] == 'W' || displayGrid[i][j] == 'V' || displayGrid[i][j] == 'N' ||
@@ -593,7 +619,7 @@ Game::~Game() {
 void Game::generateItems() {
   int numPotions = 10;
   for (int i = 0; i < numPotions; i++) {
-    int chamber = randomNum(5) + 1;
+    int chamber = randomNum(chamberCount) + 1;
     Posn posn = randomPosn(chamber);
     while (neighborHasPlayer(posn)) {
       posn = randomPosn(chamber);
@@ -604,7 +630,7 @@ void Game::generateItems() {
   }
   int numGolds = 10;
   for (int i = 0; i < numGolds; i++) {
-    int chamber = randomNum(5) + 1;
+    int chamber = randomNum(chamberCount) + 1;
     Posn posn = randomPosn(chamber);
     while (neighborHasPlayer(posn)) {
       posn = randomPosn(chamber);
@@ -625,7 +651,7 @@ void Game::generateItems() {
     displayGrid[posn.row][posn.col] = 'G';
   }
   if (getLevel() == barrierFloor) {
-    int chamber = randomNum(5) + 1;
+    int chamber = randomNum(chamberCount) + 1;
     Posn posn = randomPosn(chamber);
     while (neighborHasPlayer(posn)) {
       posn = randomPosn(chamber);
@@ -665,10 +691,11 @@ void Game::restart() {
     cin >> Symbol;
   }
   playerSymbol = Symbol;
-  displayGrid = defaultMap;
+  defaultMap = originalMap;
+  displayGrid = originalMap;
   level = 1;
   stairVisible = false;
-  barrierFloor = randomNum(5) + 1;
+  barrierFloor = randomNum(chamberCount) + 1;
   cout << RESET;
   init();
 }
