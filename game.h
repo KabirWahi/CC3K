@@ -15,11 +15,9 @@ class Game {
   std::vector<std::vector<std::pair<int, int>>> mapPosns;
   Posn stairPosition;
   int playerStartChamber;
-  int w, h;
   bool stairVisible;
   int level;
   int barrierFloor;
-  int chamberCount;
   bool newLevel = false;
   void generatePlayer(char symbol);  // generate player
   void generateEnemies();            // generate enemies and add to vector enemies
@@ -28,7 +26,6 @@ class Game {
   Posn randomNeighbour(Posn posn);   // generate random neighbour of posn
  public:
   void changeMap(std::string filename);
-  std::vector<std::vector<char>> originalMap;
   std::vector<std::vector<char>> defaultMap;
   std::vector<std::vector<char>> displayGrid;
   char playerSymbol;
