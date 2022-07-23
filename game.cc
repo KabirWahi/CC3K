@@ -57,6 +57,28 @@ void Game::changeMap(string filename) {
 Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1), stairVisible(false), barrierFloor{randomNum(5) + 1} {}
 
 void Game::init() {
+  for (size_t i = 0; i < defaultMap.size(); i++) {
+    for (size_t j = 0; j < defaultMap[i].size(); j++) {
+      if ('0' <= defaultMap[i][j] && defaultMap[i][j] <= '5') {
+        items.emplace_back(new Potion(defaultMap[i][j] - '0', Posn{int(i), int(j)}));
+        defaultMap[i][j] = '.';
+        displayGrid[i][j] = 'P';
+      } else if ('6' <= defaultMap[i][j] && defaultMap[i][j] <= '8') {
+        items.emplace_back(new Gold(defaultMap[i][j] - '0', Posn{int(i), int(j)}));
+        defaultMap[i][j] = '.';
+        displayGrid[i][j] = 'G';
+      } else if (defaultMap[i][j] == '9') {
+        Posn posn = Posn{int(i), int(j)};
+        Item *item = new DragonHoard(posn);
+        items.emplace_back(item);
+        Posn dragonPosn = randomNeighbour(posn);
+        enemies.push_back(new Dragon(dragonPosn, item));
+        defaultMap[i][j] = '.';
+        displayGrid[i][j] = 'G';
+        displayGrid[dragonPosn.row][dragonPosn.col] = 'D';
+      }
+    }
+  }
   generatePlayer(playerSymbol);
   int chamber = randomNum(chamberCount) + 1;
   while (chamber == playerStartChamber) {
@@ -64,7 +86,9 @@ void Game::init() {
   }
   stairPosition = randomPosn(chamber);
   displayGrid[stairPosition.row][stairPosition.col] = '\\';
-  generateItems();
+  if (items.empty()) {
+    generateItems();
+  }
   generateEnemies();
   displayGrid[stairPosition.row][stairPosition.col] = '.';
 }
