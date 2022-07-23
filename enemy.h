@@ -13,6 +13,7 @@ class Enemy : public Character {
   bool hasBarrier() const override { return false; };
   virtual bool isHostile() { return true; };
   virtual void setHostile() {};
+  virtual ~Enemy() {};
 };
 
 #endif  // ENEMY_H

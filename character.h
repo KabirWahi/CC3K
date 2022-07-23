@@ -18,7 +18,6 @@ class Character {
   int whichChamber;
 
  public:
-  ~Character();                                // destructor
   virtual int getAtk();                        // return atk
   virtual int getDef();                        // return def
   virtual int getHP();                         // return HP

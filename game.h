@@ -13,12 +13,13 @@ class Game {
   std::vector<Enemy *> enemies;
   std::vector<Item *> items;
   std::vector<std::vector<std::pair<int, int>>> mapPosns;
-  Posn stairPosition;
-  int playerStartChamber;
-  bool stairVisible;
-  int level;
   int height;
   int width;
+  char playerSymbol;
+  int playerStartChamber;
+  int level;
+  Posn stairPosition;
+  bool stairVisible;
   int barrierFloor;
   int chamberCount;
   bool newLevel = false;
@@ -31,7 +32,6 @@ class Game {
   void changeMap(std::string filename);
   std::vector<std::vector<char>> defaultMap;
   std::vector<std::vector<char>> displayGrid;
-  char playerSymbol;
   Game(char playerSymbol);            // constructor
   ~Game();                            // destructor
   void play();                        // play game

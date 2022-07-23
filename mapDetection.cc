@@ -35,7 +35,7 @@ using namespace std;
 |-----------------------------------------------------------------------------|
 */
 
-void bfs(vector<string> &map, vector<vector<bool>> &visited, int i, int j, vector<pair<int, int>> &pos) {
+void bfs(vector<string> &map, vector<vector<bool>> &visited, size_t i, size_t j, vector<pair<int, int>> &pos) {
   if (i < 0 || i >= map.size() || j < 0 || j >= map[0].size()) {
     return;
   }
@@ -52,8 +52,8 @@ void bfs(vector<string> &map, vector<vector<bool>> &visited, int i, int j, vecto
 
 vector<vector<pair<int, int>>> mapDetection(vector<string> &map) {
   vector<vector<bool>> visited(map.size(), vector<bool>(map[0].size(), false));
-  for (int i = 0; i < map.size(); i++) {
-    for (int j = 0; j < map[0].size(); j++) {
+  for (size_t i = 0; i < map.size(); i++) {
+    for (size_t j = 0; j < map[0].size(); j++) {
       if (map[i][j] == '|' || map[i][j] == '-' || map[i][j] == '+' || map[i][j] == '#' || map[i][j] == ' ') {
         visited[i][j] = true;
       }
@@ -63,8 +63,8 @@ vector<vector<pair<int, int>>> mapDetection(vector<string> &map) {
   vector<vector<pair<int, int>>> chambers;
   while (true) {
     bool found = false;
-    for (int i = 0; i < map.size(); i++) {
-      for (int j = 0; j < map[0].size(); j++) {
+    for (size_t i = 0; i < map.size(); i++) {
+      for (size_t j = 0; j < map[0].size(); j++) {
         if (!visited[i][j]) {
           chambers.emplace_back();
           found = true;

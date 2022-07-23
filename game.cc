@@ -130,18 +130,18 @@ void Game::play() {
           }
           break;
         } else if (tmp == 'G') {
-          for (int j = 0; j < items.size(); j++) {
-            if (items[j]->getPosition().row == player->getPosition().row + r[i] &&
-                items[j]->getPosition().col == player->getPosition().col + c[i]) {
-              if (!items[j]->isGuarded()) {
+          for (auto it : items) {
+            if (it->getPosition().row == player->getPosition().row + r[i] &&
+                it->getPosition().col == player->getPosition().col + c[i]) {
+              if (!it->isGuarded()) {
                 moved = true;
                 player->setPosition(Posn{player->getPosition().row + r[i],
                                          player->getPosition().col + c[i]});
-                player->addGold(items[j]->getValue());
+                player->addGold(it->getValue());
                 msg = "You moved " + directions[i] + " and picked up " +
-                      to_string(items[j]->getValue()) + " gold. ";
-                displayGrid[items[j]->getPosition().row][items[j]->getPosition().col] = '.';
-                items.erase(remove(items.begin(), items.end(), items[j]), items.end());
+                      to_string(it->getValue()) + " gold. ";
+                displayGrid[it->getPosition().row][it->getPosition().col] = '.';
+                items.erase(remove(items.begin(), items.end(), it), items.end());
                 break;
               }
             }
@@ -161,17 +161,17 @@ void Game::play() {
           msg = "You moved " + directions[i] + " and picked up the compass. ";
           break;
         } else if (tmp == 'B') {
-          for (int j = 0; j < items.size(); j++) {
-            if (items[j]->getPosition().row == player->getPosition().row + r[i] &&
-                items[j]->getPosition().col == player->getPosition().col + c[i]) {
-              if (!items[j]->isGuarded()) {
+          for (auto it : items) {
+            if (it->getPosition().row == player->getPosition().row + r[i] &&
+                it->getPosition().col == player->getPosition().col + c[i]) {
+              if (!it->isGuarded()) {
                 moved = true;
                 player->setPosition(Posn{player->getPosition().row + r[i],
                                          player->getPosition().col + c[i]});
                 player->toggleBarrier();
                 msg = "You moved " + directions[i] + " and picked up the barrier. ";
-                displayGrid[items[j]->getPosition().row][items[j]->getPosition().col] = '.';
-                items.erase(remove(items.begin(), items.end(), items[j]), items.end());
+                displayGrid[it->getPosition().row][it->getPosition().col] = '.';
+                items.erase(remove(items.begin(), items.end(), it), items.end());
                 break;
               }
             }
@@ -501,12 +501,12 @@ void Game::generateEnemies() {
 
 void Game::nextLevel() {
   level++;
-  for (int i = 0; i < enemies.size(); i++) {
-    delete enemies[i];
+  for (auto i : enemies) {
+    delete i;
   }
   enemies.clear();
-  for (int i = 0; i < items.size(); i++) {
-    delete items[i];
+  for (auto i : items) {
+    delete i;
   }
   items.clear();
   displayGrid = defaultMap;
@@ -578,14 +578,14 @@ void Game::print() {
 }
 
 Game::~Game() {
-  for (int i = 0; i < enemies.size(); i++) {
-    delete enemies[i];
+  for (auto i : enemies) {
+    delete i;
   }
-  for (int i = 0; i < items.size(); i++) {
-    delete items[i];
+  for (auto i : items) {
+    delete i;
   }
   delete player;
-  for (int i = 0; i < defaultMap.size(); i++) {
+  for (size_t i = 0; i < defaultMap.size(); i++) {
     defaultMap[i].clear();
     displayGrid[i].clear();
   }
@@ -643,12 +643,12 @@ void Game::generateItems() {
 }
 
 void Game::restart() {
-  for (int i = 0; i < enemies.size(); i++) {
-    delete enemies[i];
+  for (auto i : enemies) {
+    delete i;
   }
   enemies.clear();
-  for (int i = 0; i < items.size(); i++) {
-    delete items[i];
+  for (auto i : items) {
+    delete i;
   }
   items.clear();
   delete player;

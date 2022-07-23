@@ -5,8 +5,6 @@
 
 using namespace std;
 
-Character::~Character() {}
-
 int Character::getAtk() {
   return max(0, atk);
 }

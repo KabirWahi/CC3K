@@ -4,11 +4,11 @@
 
 class Item {
     protected:
-    char symbol;
+    int id;
     Posn position;
     int value;  
     bool guarded;
-    int id;
+    char symbol;
 
     public:
     Item(int id, Posn position);
