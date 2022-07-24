@@ -8,7 +8,6 @@ class Dragon : public Enemy {
    Item *guarding;
  public:
   Dragon(Posn p, Item *i);
-  Item* getGuarding();
   void attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
