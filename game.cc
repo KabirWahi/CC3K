@@ -75,7 +75,7 @@ void Game::init() {
         enemies.push_back(new Dragon(dragonPosn, item));
         defaultMap[i][j] = '.';
         displayGrid[i][j] = 'G';
-        displayGrid[dragonPosn.row][dragonPosn.col] = 'D';
+        displayGrid[dragonPosn.getRow()][dragonPosn.getCol()] = 'D';
       }
     }
   }
@@ -85,12 +85,12 @@ void Game::init() {
     chamber = randomNum(chamberCount) + 1;
   }
   stairPosition = randomPosn(chamber);
-  displayGrid[stairPosition.row][stairPosition.col] = '\\';
+  displayGrid[stairPosition.getRow()][stairPosition.getCol()] = '\\';
   if (items.empty()) {
     generateItems();
   }
   generateEnemies();
-  displayGrid[stairPosition.row][stairPosition.col] = '.';
+  displayGrid[stairPosition.getRow()][stairPosition.getCol()] = '.';
 }
 
 Posn Game::randomPosn(int chamber) {
@@ -108,14 +108,14 @@ Posn Game::randomPosn(int chamber) {
 }
 
 Posn Game::randomNeighbour(Posn posn) {
-  int row = posn.row;
-  int col = posn.col;
+  int row = posn.getRow();
+  int col = posn.getCol();
   int neighbour = randomNum(8);
   row += r[neighbour];
   col += c[neighbour];
   while (displayGrid[row][col] != '.') {
-    row = posn.row;
-    col = posn.col;
+    row = posn.getRow();
+    col = posn.getCol();
     neighbour = randomNum(8);
     row += r[neighbour];
     col += c[neighbour];
@@ -133,13 +133,13 @@ void Game::play() {
     bool moved = false;
     for (int i = 0; i < 8; i++) {
       if (input == movement[i]) {
-        char tmp = displayGrid[player->getPosition().row + r[i]]
-                              [player->getPosition().col + c[i]];
+        char tmp = displayGrid[player->getPosition().getRow() + r[i]]
+                              [player->getPosition().getCol() + c[i]];
         if (tmp == '.' || tmp == '+' || tmp == '#' || tmp == '\\') {
           moved = true;
-          player->setPosition(Posn{player->getPosition().row + r[i],
-                                   player->getPosition().col + c[i]});
-          displayGrid[player->getPosition().row][player->getPosition().col] = '@';
+          player->setPosition(Posn{player->getPosition().getRow() + r[i],
+                                   player->getPosition().getCol() + c[i]});
+          displayGrid[player->getPosition().getRow()][player->getPosition().getCol()] = '@';
           if (player->getPosition() == stairPosition) {
             if (level == 5) {
               cout << "congratulations! You have reached the end of the dungeon." << endl;
@@ -155,16 +155,16 @@ void Game::play() {
           break;
         } else if (tmp == 'G') {
           for (auto it : items) {
-            if (it->getPosition().row == player->getPosition().row + r[i] &&
-                it->getPosition().col == player->getPosition().col + c[i]) {
+            if (it->getPosition().getRow() == player->getPosition().getRow() + r[i] &&
+                it->getPosition().getCol() == player->getPosition().getCol() + c[i]) {
               if (!it->isGuarded()) {
                 moved = true;
-                player->setPosition(Posn{player->getPosition().row + r[i],
-                                         player->getPosition().col + c[i]});
+                player->setPosition(Posn{player->getPosition().getRow() + r[i],
+                                         player->getPosition().getCol() + c[i]});
                 player->addGold(it->getValue());
                 msg = "You moved " + directions[i] + " and picked up " +
                       to_string(it->getValue()) + " gold. ";
-                displayGrid[it->getPosition().row][it->getPosition().col] = '.';
+                displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
                 items.erase(remove(items.begin(), items.end(), it), items.end());
                 break;
               }
@@ -173,8 +173,8 @@ void Game::play() {
           break;
         } else if (tmp == 'C') {
           moved = true;
-          player->setPosition(Posn{player->getPosition().row + r[i],
-                                   player->getPosition().col + c[i]});
+          player->setPosition(Posn{player->getPosition().getRow() + r[i],
+                                   player->getPosition().getCol() + c[i]});
           stairVisible = true;
           for (auto it : items) {
             if (it->getPosition() == player->getPosition()) {
@@ -186,15 +186,15 @@ void Game::play() {
           break;
         } else if (tmp == 'B') {
           for (auto it : items) {
-            if (it->getPosition().row == player->getPosition().row + r[i] &&
-                it->getPosition().col == player->getPosition().col + c[i]) {
+            if (it->getPosition().getRow() == player->getPosition().getRow() + r[i] &&
+                it->getPosition().getCol() == player->getPosition().getCol() + c[i]) {
               if (!it->isGuarded()) {
                 moved = true;
-                player->setPosition(Posn{player->getPosition().row + r[i],
-                                         player->getPosition().col + c[i]});
+                player->setPosition(Posn{player->getPosition().getRow() + r[i],
+                                         player->getPosition().getCol() + c[i]});
                 player->toggleBarrier();
                 msg = "You moved " + directions[i] + " and picked up the barrier. ";
-                displayGrid[it->getPosition().row][it->getPosition().col] = '.';
+                displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
                 items.erase(remove(items.begin(), items.end(), it), items.end());
                 break;
               }
@@ -208,8 +208,8 @@ void Game::play() {
       cin >> di;
       for (int i = 0; i < 8; i++) {
         if (di == movement[i]) {
-          Posn enemypos = Posn{player->getPosition().row + r[i],
-                               player->getPosition().col + c[i]};
+          Posn enemypos = Posn{player->getPosition().getRow() + r[i],
+                               player->getPosition().getCol() + c[i]};
           for (auto en : enemies) {
             if (enemypos == en->getPosition()) {
               int oldHP = en->getHP();
@@ -232,8 +232,8 @@ void Game::play() {
       cin >> di;
       for (int i = 0; i < 8; i++) {
         if (di == movement[i]) {
-          Posn potionpos = Posn{player->getPosition().row + r[i],
-                                player->getPosition().col + c[i]};
+          Posn potionpos = Posn{player->getPosition().getRow() + r[i],
+                                player->getPosition().getCol() + c[i]};
           for (auto it : items) {
             if (potionpos == it->getPosition() && it->getSymbol() == 'P') {
               if (it->getId() == 0 || it->getId() == 3) {
@@ -261,7 +261,7 @@ void Game::play() {
                 msg = "PC picked up a WD potion. ";
               }
               player->toggleknownPotions(it->getId());
-              displayGrid[it->getPosition().row][it->getPosition().col] = '.';
+              displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
               items.erase(remove(items.begin(), items.end(), it), items.end());
               moved = true;
               cout << it->getId() << endl;
@@ -310,12 +310,12 @@ string Game::update() {
         items.emplace_back(new Gold(8, en->getPosition()));
         msg = "You killed the merchant and found a merchant hoard. ";
         cout << items[items.size() - 1]->getValue() << endl;
-        displayGrid[en->getPosition().row][en->getPosition().col] = 'G';
+        displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = 'G';
       } else {
         player->addGold(en->getGold());
         msg = msg + "You slained " + (en->getSymbol()) + " and got " +
               to_string(en->getGold()) + " gold. ";
-        displayGrid[en->getPosition().row][en->getPosition().col] = '.';
+        displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = '.';
       }
       if (en->compass) {
         items.emplace_back(new Compass(en->getPosition()));
@@ -328,12 +328,12 @@ string Game::update() {
     }
     for (int i = 0; i < 8; i++) {
       Posn enemyattack =
-          Posn{en->getPosition().row + r[i], en->getPosition().col + c[i]};
+          Posn{en->getPosition().getRow() + r[i], en->getPosition().getCol() + c[i]};
       if (enemyattack == player->getPosition()) {
         if (en->getSymbol() == 'D') {
           for (int j = 0; j < 8; j++) {
-            if (en->getItem()->getPosition().row == player->getPosition().row + r[j] &&
-                en->getItem()->getPosition().col == player->getPosition().col + c[j]) {
+            if (en->getItem()->getPosition().getRow() == player->getPosition().getRow() + r[j] &&
+                en->getItem()->getPosition().getCol() == player->getPosition().getCol() + c[j]) {
               int hit = randomNum(2);
               if (hit == 1) {
                 int oldHP = player->getHP();
@@ -384,9 +384,9 @@ string Game::update() {
     }
     bool canMove = false;
     for (int i = 0; i < 8; i++) {
-      Posn enemypos = Posn{en->getPosition().row + r[i],
-                           en->getPosition().col + c[i]};
-      if (displayGrid[enemypos.row][enemypos.col] == '.') {
+      Posn enemypos = Posn{en->getPosition().getRow() + r[i],
+                           en->getPosition().getCol() + c[i]};
+      if (displayGrid[enemypos.getRow()][enemypos.getCol()] == '.') {
         canMove = true;
         break;
       }
@@ -394,28 +394,28 @@ string Game::update() {
     if (canMove) {
       int di = randomNum(8);
       while (!moved) {
-        if (displayGrid[en->getPosition().row + r[di]][en->getPosition().col + c[di]] == '.') {
+        if (displayGrid[en->getPosition().getRow() + r[di]][en->getPosition().getCol() + c[di]] == '.') {
           if (en->getSymbol() == 'D') {
             bool correctMovement = false;
             for (int i = 0; i < 8; i++) {
-              if (en->getItem()->getPosition().row + r[i] == en->getPosition().row + r[di] &&
-                  en->getItem()->getPosition().col + c[i] == en->getPosition().col + c[di]) {
+              if (en->getItem()->getPosition().getRow() + r[i] == en->getPosition().getRow() + r[di] &&
+                  en->getItem()->getPosition().getCol() + c[i] == en->getPosition().getCol() + c[di]) {
                 correctMovement = true;
                 break;
               }
             }
             if (correctMovement) {
-              displayGrid[en->getPosition().row][en->getPosition().col] = '.';
-              en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
-              displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+              displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = '.';
+              en->setPosition(Posn{en->getPosition().getRow() + r[di], en->getPosition().getCol() + c[di]});
+              displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = en->getSymbol();
               moved = true;
             } else {
               moved = true;
             }
           } else {
-            displayGrid[en->getPosition().row][en->getPosition().col] = '.';
-            en->setPosition(Posn{en->getPosition().row + r[di], en->getPosition().col + c[di]});
-            displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+            displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = '.';
+            en->setPosition(Posn{en->getPosition().getRow() + r[di], en->getPosition().getCol() + c[di]});
+            displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = en->getSymbol();
             moved = true;
           }
         } else {
@@ -425,10 +425,10 @@ string Game::update() {
     }
   }
   for (int i = 0; i < 8; i++) {
-    if (displayGrid[player->getPosition().row + r[i]][player->getPosition().col + c[i]] == 'P') {
+    if (displayGrid[player->getPosition().getRow() + r[i]][player->getPosition().getCol() + c[i]] == 'P') {
       for (auto it : items) {
-        if (it->getPosition().row == player->getPosition().row + r[i] &&
-            it->getPosition().col == player->getPosition().col + c[i] && it->getSymbol() == 'P') {
+        if (it->getPosition().getRow() == player->getPosition().getRow() + r[i] &&
+            it->getPosition().getCol() == player->getPosition().getCol() + c[i] && it->getSymbol() == 'P') {
           if (player->getknownPotions(it->getId())) {
             msg = msg + "PC sees a ";
             if (it->getId() == 0) {
@@ -452,15 +452,15 @@ string Game::update() {
     }
   }
   displayGrid = defaultMap;
-  displayGrid[player->getPosition().row][player->getPosition().col] = '@';
+  displayGrid[player->getPosition().getRow()][player->getPosition().getCol()] = '@';
   for (auto en : enemies) {
-    displayGrid[en->getPosition().row][en->getPosition().col] = en->getSymbol();
+    displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = en->getSymbol();
   }
   for (auto it : items) {
-    displayGrid[it->getPosition().row][it->getPosition().col] = it->getSymbol();
+    displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = it->getSymbol();
   }
   if (stairVisible) {
-    displayGrid[getStairs().row][getStairs().col] = '\\';
+    displayGrid[getStairs().getRow()][getStairs().getCol()] = '\\';
   }
   return msg;
 }
@@ -478,12 +478,12 @@ void Game::generatePlayer(char symbol) {
   } else {
       player = new Orc(posn);
   }
-  displayGrid[posn.row][posn.col] = '@';
+  displayGrid[posn.getRow()][posn.getCol()] = '@';
 }
 
 bool Game::neighborHasPlayer(Posn posn) {
   for (int i = 0; i < 8; i++) {
-    if (displayGrid[posn.row + r[i]][posn.col + c[i]] == '@') {
+    if (displayGrid[posn.getRow() + r[i]][posn.getCol() + c[i]] == '@') {
       return true;
     }
   }
@@ -501,22 +501,22 @@ void Game::generateEnemies() {
     int type = randomNum(18);  // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
     if (type < 4) {            // 14 - 15 Pheonix, 16 - 17 Merchant
       enemies.push_back(new Werewolf(posn));
-      displayGrid[posn.row][posn.col] = 'W';
+      displayGrid[posn.getRow()][posn.getCol()] = 'W';
     } else if (type < 7) {
       enemies.push_back(new Vampire(posn));
-      displayGrid[posn.row][posn.col] = 'V';
+      displayGrid[posn.getRow()][posn.getCol()] = 'V';
     } else if (type < 12) {
       enemies.push_back(new Goblin(posn));
-      displayGrid[posn.row][posn.col] = 'N';
+      displayGrid[posn.getRow()][posn.getCol()] = 'N';
     } else if (type < 14) {
       enemies.push_back(new Troll(posn));
-      displayGrid[posn.row][posn.col] = 'T';
+      displayGrid[posn.getRow()][posn.getCol()] = 'T';
     } else if (type < 16) {
       enemies.push_back(new Phoenix(posn));
-      displayGrid[posn.row][posn.col] = 'X';
+      displayGrid[posn.getRow()][posn.getCol()] = 'X';
     } else {
       enemies.push_back(new Merchant(posn));
-      displayGrid[posn.row][posn.col] = 'M';
+      displayGrid[posn.getRow()][posn.getCol()] = 'M';
     }
   }
   int compassHolder = randomNum(20);
@@ -627,7 +627,7 @@ void Game::generateItems() {
     }
     int type = randomNum(6);  // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
     items.emplace_back(new Potion(type, posn));
-    displayGrid[posn.row][posn.col] = 'P';
+    displayGrid[posn.getRow()][posn.getCol()] = 'P';
   }
   int numGolds = 10;
   for (int i = 0; i < numGolds; i++) {
@@ -647,9 +647,9 @@ void Game::generateItems() {
       // random posn for dragon
       Posn dragonPosn = randomNeighbour(posn);
       enemies.push_back(new Dragon(dragonPosn, item));
-      displayGrid[dragonPosn.row][dragonPosn.col] = 'D';
+      displayGrid[dragonPosn.getRow()][dragonPosn.getCol()] = 'D';
     }
-    displayGrid[posn.row][posn.col] = 'G';
+    displayGrid[posn.getRow()][posn.getCol()] = 'G';
   }
   if (getLevel() == barrierFloor) {
     int chamber = randomNum(chamberCount) + 1;
@@ -659,10 +659,10 @@ void Game::generateItems() {
     }
     BarrierSuit *bar = new BarrierSuit(posn);
     items.emplace_back(bar);
-    displayGrid[posn.row][posn.col] = 'B';
+    displayGrid[posn.getRow()][posn.getCol()] = 'B';
     Posn dragonPosn = randomNeighbour(posn);
     enemies.push_back(new Dragon(dragonPosn, bar));
-    displayGrid[dragonPosn.row][dragonPosn.col] = 'D';
+    displayGrid[dragonPosn.getRow()][dragonPosn.getCol()] = 'D';
   }
 }
 

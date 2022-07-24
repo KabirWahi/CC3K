@@ -13,6 +13,8 @@ class Game {
   std::vector<Enemy *> enemies;
   std::vector<Item *> items;
   std::vector<std::vector<std::pair<int, int>>> mapPosns;
+  std::vector<std::vector<char>> defaultMap;
+  std::vector<std::vector<char>> displayGrid;
   int height;
   int width;
   char playerSymbol;
@@ -23,27 +25,26 @@ class Game {
   int barrierFloor;
   int chamberCount;
   bool newLevel = false;
-  void generatePlayer(char symbol);  // generate player
-  void generateEnemies();            // generate enemies and add to vector enemies
-  void generateItems();              // generate items and add to vector items
-  Posn randomPosn(int chamber);      // generate random valid posn
-  Posn randomNeighbour(Posn posn);   // generate random neighbour of posn
- public:
-  void changeMap(std::string filename);
-  std::vector<std::vector<char>> defaultMap;
-  std::vector<std::vector<char>> displayGrid;
-  Game(char playerSymbol);            // constructor
-  ~Game();                            // destructor
-  void play();                        // play game
-  void print();                       // print displayGrid
-  std::string update();               // update displayGrid
-  Player *getPlayer();                // return player pointer
-  Posn getStairs();                   // return stairs position
-  int getLevel();                     // return level
+  void generatePlayer(char symbol);   // generate player
+  void generateEnemies();             // generate enemies and add to vector enemies
+  void generateItems();               // generate items and add to vector items
   void init();                        // initialize game
   void nextLevel();                   // go to next level
   void restart();                     // restart game
   bool neighborHasPlayer(Posn posn);  // return true if neighbor has player
+  void print();                       // print displayGrid
+  Posn randomPosn(int chamber);       // generate random valid posn
+  Posn randomNeighbour(Posn posn);    // generate random neighbour of posn
+  std::string update();               // update displayGrid
+  Player *getPlayer();                // return player pointer
+  Posn getStairs();                   // return stairs position
+  int getLevel();                     // return level
+
+ public:
+  void changeMap(std::string filename);
+  Game(char playerSymbol);            // constructor
+  ~Game();                            // destructor
+  void play();                        // play game
 };
 
 #endif  // GAME_H
