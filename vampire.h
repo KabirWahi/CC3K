@@ -3,8 +3,10 @@
 #include "enemy.h"
 
 class Vampire : public Enemy {
+  bool bonus;
+
  public:
-  Vampire(Posn p);
+  Vampire(Posn p, bool bonus);
   std::string attack(Character *target) override;
   int getAtk() override;
   int getDef() override;

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Vampire::Vampire(Posn p) {
+Vampire::Vampire(Posn p, bool bonus) : bonus{bonus} {
   atk = 25;
   def = 25;
   HP = 50;
@@ -23,7 +23,11 @@ string Vampire::attack(Character *target) {
       damage = ceil(double(damage) / double(2));
     }
     target->setHP(target->getHP() - damage);
-    msg = msg + symbol + " deals " + to_string(damage) + " damage to PC. " + symbol + " has lifesteal and healed " + to_string(damage / 5) + " HP. ";
+    msg = msg + symbol + " deals " + to_string(damage) + " damage to PC. ";
+    if (bonus) {
+      HP = HP + (damage / 5);
+      msg = msg + symbol + " has lifesteal and healed " + to_string(damage / 5) + " HP (" + to_string(HP) + " HP). ";
+    }
   } else {
     msg = msg + symbol + " missed. ";
   }

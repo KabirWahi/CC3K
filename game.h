@@ -10,6 +10,7 @@
 
 class Game {
   Player *player;
+  bool bonus = false;
   std::vector<Enemy *> enemies;
   std::vector<Item *> items;
   std::vector<std::vector<std::pair<int, int>>> mapPosns;
@@ -42,7 +43,7 @@ class Game {
 
  public:
   void changeMap(std::string filename);
-  Game(char playerSymbol);            // constructor
+  Game(char playerSymbol, bool bonus);            // constructor
   ~Game();                            // destructor
   void play();                        // play game
 };

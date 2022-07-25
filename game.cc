@@ -41,7 +41,7 @@ void Game::changeMap(string filename) {
   chamberCount = mapPosns.size();
 }
 
-Game::Game(char playerSymbol) : playerSymbol(playerSymbol), level(1), stairVisible(false), barrierFloor{randomNum(5) + 1} {}
+Game::Game(char playerSymbol, bool bonus) : bonus{bonus}, playerSymbol(playerSymbol), level(1), stairVisible(false), barrierFloor{randomNum(5) + 1} {}
 
 void Game::init() {
   for (size_t i = 0; i < defaultMap.size(); i++) {
@@ -216,29 +216,12 @@ void Game::play() {
                                 player->getPosition().getCol() + c[i]};
           for (auto it : items) {
             if (potionpos == it->getPosition() && it->getSymbol() == 'P') {
-              if (it->getId() == 0 || it->getId() == 3) {
-                player->addHealth(it->getValue());
-                if (it->getId() == 0) {
-                  msg = "PC picked up a RH potion. ";
-                } else {
-                  msg = "PC picked up a PH potion. ";
-                }
+              msg = player->usePotion(it);
+              if (it->getId() == 1 || it->getId() == 4) {
+                player = new AtkBuff(player, it->getName());
               }
-              if (it->getId() == 1) {
-                player = new AtkBuff(player, "BA");
-                msg = "PC picked up a BA potion. ";
-              }
-              if (it->getId() == 2) {
-                player = new DefBuff(player, "BD");
-                msg = "PC picked up a BD potion. ";
-              }
-              if (it->getId() == 4) {
-                player = new AtkBuff(player, "WA");
-                msg = "PC picked up a WA potion. ";
-              }
-              if (it->getId() == 5) {
-                player = new DefBuff(player, "WD");
-                msg = "PC picked up a WD potion. ";
+              if (it->getId() == 2 || it->getId() == 5) {
+                player = new DefBuff(player, it->getName());
               }
               player->toggleknownPotions(it->getId());
               displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
@@ -425,7 +408,7 @@ void Game::generateEnemies() {
       enemies.push_back(new Werewolf(posn));
       displayGrid[posn.getRow()][posn.getCol()] = 'W';
     } else if (type < 7) {
-      enemies.push_back(new Vampire(posn));
+      enemies.push_back(new Vampire(posn, bonus));
       displayGrid[posn.getRow()][posn.getCol()] = 'V';
     } else if (type < 12) {
       enemies.push_back(new Goblin(posn));

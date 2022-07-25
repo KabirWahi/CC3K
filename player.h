@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "character.h"
-#include "potion.h"
+#include "item.h"
 
 class Player : public Character {
  protected:
@@ -17,6 +17,7 @@ class Player : public Character {
   virtual void addHealth(int amount);
   virtual std::string attack(Character *target) override;
   virtual bool hasBarrier() const override;
+  std::string usePotion(Item* item);
   virtual void toggleBarrier();
   virtual ~Player();
 };
