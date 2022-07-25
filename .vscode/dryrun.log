@@ -1,11 +1,16 @@
 make.exe --dry-run --keep-going --print-directory
 make: Entering directory 'c:/Users/kabir/Desktop/Uni Notes/2A/CS246/final project/CC3K'
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o main.o main.cc
+ 
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o game.o game.cc
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o character.o character.cc
+ 
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o player.o player.cc
+ 
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o enemy.o enemy.cc
+ 
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o human.o human.cc
+ 
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o vampire.o vampire.cc
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o dragon.o dragon.cc
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o troll.o troll.cc
@@ -30,6 +35,8 @@ g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o randoms.o randoms.cc
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o god.o god.cc
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o magicarcher.o magicarcher.cc
 g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o valkyrie.o valkyrie.cc
-g++ -std=c++14 -Wall -MMD -g -Werror=vla main.o game.o character.o player.o enemy.o human.o vampire.o dragon.o troll.o merchant.o phoenix.o werewolf.o goblin.o item.o potion.o gold.o dragonhoard.o barriersuit.o buff.o atkbuff.o defbuff.o compass.o dwarf.o elf.o mapDetection.o orc.o randoms.o god.o magicarcher.o valkyrie.o -o cc3k
+g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o reverser.o reverser.cc
+g++ -std=c++14 -Wall -MMD -g -Werror=vla   -c -o potionbook.o potionbook.cc
+g++ -std=c++14 -Wall -MMD -g -Werror=vla main.o game.o character.o player.o enemy.o human.o vampire.o dragon.o troll.o merchant.o phoenix.o werewolf.o goblin.o item.o potion.o gold.o dragonhoard.o barriersuit.o buff.o atkbuff.o defbuff.o compass.o dwarf.o elf.o mapDetection.o orc.o randoms.o god.o magicarcher.o valkyrie.o reverser.o potionbook.o -o cc3k
 make: Leaving directory 'c:/Users/kabir/Desktop/Uni Notes/2A/CS246/final project/CC3K'
  

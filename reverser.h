@@ -1,16 +1,16 @@
-#ifndef TROLL_H
-#define TROLL_H
+#ifndef REVERSER_H
+#define REVERSER_H
 #include "enemy.h"
 
-class Troll : public Enemy {
+class Reverser : public Enemy {
   bool bonus;
 
  public:
-  Troll(Posn p, bool bonus);
+  Reverser(Posn p);
   std::string attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
   Item *getItem() override { return nullptr; };
 };
 
-#endif  // TROLL_H
+#endif  // REVERSER_H

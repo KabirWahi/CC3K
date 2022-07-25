@@ -187,6 +187,24 @@ void Game::play() {
               }
             }
           }
+        } else if (tmp == 'K') {
+          for (auto it : items) {
+            if (it->getPosition().getRow() == player->getPosition().getRow() + r[i] &&
+                it->getPosition().getCol() == player->getPosition().getCol() + c[i]) {
+              if (!it->isGuarded()) {
+                moved = true;
+                player->setPosition(Posn{player->getPosition().getRow() + r[i],
+                                         player->getPosition().getCol() + c[i]});
+                for (int k = 0; k < 6; k++) {
+                  player->toggleknownPotions(k);
+                }
+                msg = "You moved " + directions[i] + " and picked up the Potion Book. ";
+                displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
+                items.erase(remove(items.begin(), items.end(), it), items.end());
+                break;
+              }
+            }
+          }
         }
       }
     }
@@ -461,8 +479,13 @@ void Game::generateEnemies() {
     while (neighborHasPlayer(posn)) {
       posn = randomPosn(chamber);
     }
-    int type = randomNum(18);  // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
-    if (type < 4) {            // 14 - 15 Pheonix, 16 - 17 Merchant
+    int type;
+    if (bonus) {
+      type = randomNum(20);
+    } else {
+      type = randomNum(18);   // 0 - 3 Werewolf, 4 - 6 Vampire, 7 - 11 Goblin, 12 - 13 Troll,
+    }                              // 14 - 15 Pheonix, 16 - 17 Merchant, 18 - 19 Ditto
+    if (type < 4) {            
       enemies.push_back(new Werewolf(posn));
       displayGrid[posn.getRow()][posn.getCol()] = 'W';
     } else if (type < 7) {
@@ -472,14 +495,17 @@ void Game::generateEnemies() {
       enemies.push_back(new Goblin(posn, bonus));
       displayGrid[posn.getRow()][posn.getCol()] = 'N';
     } else if (type < 14) {
-      enemies.push_back(new Troll(posn));
+      enemies.push_back(new Troll(posn, bonus));
       displayGrid[posn.getRow()][posn.getCol()] = 'T';
     } else if (type < 16) {
       enemies.push_back(new Phoenix(posn));
       displayGrid[posn.getRow()][posn.getCol()] = 'X';
-    } else {
+    } else if (type < 18) {
       enemies.push_back(new Merchant(posn));
       displayGrid[posn.getRow()][posn.getCol()] = 'M';
+    } else {
+      enemies.push_back(new Reverser(posn));
+      displayGrid[posn.getRow()][posn.getCol()] = 'R';
     }
   }
   int compassHolder = randomNum(20);
@@ -538,11 +564,11 @@ void Game::print() {
       if (displayGrid[i][j] == '@' || displayGrid[i][j] == '\\') {
         cout << GREEN << displayGrid[i][j] << RESET;
       } else if (displayGrid[i][j] == 'W' || displayGrid[i][j] == 'V' || displayGrid[i][j] == 'N' ||
-                 displayGrid[i][j] == 'T' || displayGrid[i][j] == 'X' || displayGrid[i][j] == 'M' || displayGrid[i][j] == 'D') {
+                 displayGrid[i][j] == 'T' || displayGrid[i][j] == 'X' || displayGrid[i][j] == 'M' || displayGrid[i][j] == 'D' || displayGrid[i][j] == 'R') {
         cout << RED << displayGrid[i][j] << RESET;
       } else if (displayGrid[i][j] == '#' || displayGrid[i][j] == '+' || displayGrid[i][j] == '|' || displayGrid[i][j] == '-') {
         cout << BLUE << displayGrid[i][j] << RESET;
-      } else if (displayGrid[i][j] == 'G' || displayGrid[i][j] == 'C' || displayGrid[i][j] == 'B') {
+      } else if (displayGrid[i][j] == 'G' || displayGrid[i][j] == 'C' || displayGrid[i][j] == 'B' || displayGrid[i][j] == 'K') {
         cout << GOLDEN << displayGrid[i][j] << RESET;
       } else if (displayGrid[i][j] == 'P') {
         cout << PURPLE << displayGrid[i][j] << RESET;
@@ -588,7 +614,7 @@ void Game::generateItems() {
       posn = randomPosn(chamber);
     }
     int type = randomNum(6);  // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
-    items.emplace_back(new Potion(0, posn));
+    items.emplace_back(new Potion(type, posn));
     displayGrid[posn.getRow()][posn.getCol()] = 'P';
   }
   int numGolds = 10;
@@ -624,6 +650,19 @@ void Game::generateItems() {
     displayGrid[posn.getRow()][posn.getCol()] = 'B';
     Posn dragonPosn = randomNeighbour(posn);
     enemies.push_back(new Dragon(dragonPosn, bar));
+    displayGrid[dragonPosn.getRow()][dragonPosn.getCol()] = 'D';
+  }
+  if (level == 1 && bonus) {
+    int chamber = randomNum(chamberCount) + 1;
+    Posn posn = randomPosn(chamber);
+    while (neighborHasPlayer(posn)) {
+      posn = randomPosn(chamber);
+    }
+    PotionBook *pb = new PotionBook(posn);
+    items.emplace_back(pb);
+    displayGrid[posn.getRow()][posn.getCol()] = 'K';
+    Posn dragonPosn = randomNeighbour(posn);
+    enemies.push_back(new Dragon(dragonPosn, pb));
     displayGrid[dragonPosn.getRow()][dragonPosn.getCol()] = 'D';
   }
 }

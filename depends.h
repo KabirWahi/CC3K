@@ -7,6 +7,7 @@
 #include "valkyrie.h"
 
 
+#include "reverser.h"
 #include "dragon.h"
 #include "goblin.h"
 #include "merchant.h"
@@ -17,6 +18,7 @@
 
 
 #include "potion.h"
+#include "potionbook.h"
 #include "gold.h"
 #include "dragonhoard.h"
 #include "barriersuit.h"
