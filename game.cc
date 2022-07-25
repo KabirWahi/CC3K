@@ -227,7 +227,6 @@ void Game::play() {
               displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
               items.erase(remove(items.begin(), items.end(), it), items.end());
               moved = true;
-              cout << it->getId() << endl;
               break;
             }
           }
@@ -411,7 +410,7 @@ void Game::generateEnemies() {
       enemies.push_back(new Vampire(posn, bonus));
       displayGrid[posn.getRow()][posn.getCol()] = 'V';
     } else if (type < 12) {
-      enemies.push_back(new Goblin(posn));
+      enemies.push_back(new Goblin(posn, bonus));
       displayGrid[posn.getRow()][posn.getCol()] = 'N';
     } else if (type < 14) {
       enemies.push_back(new Troll(posn));
@@ -590,11 +589,25 @@ void Game::restart() {
   cout << "Dwarf (d)" << endl;
   cout << "Elf (e)" << endl;
   cout << "Orc (o)" << endl;
+  if (bonus) {
+    cout << "God (g)" << endl;
+    cout << "Valkarie (v)" << endl;
+  }
   char Symbol;
   cin >> Symbol;
-  while (Symbol != 'h' && Symbol != 'd' && Symbol != 'e' && Symbol != 'o') {
-    cout << "Invalid character. Please try again." << endl;
-    cin >> Symbol;
+  if (bonus) {
+    while (playerSymbol != 'h' && playerSymbol != 'd' && playerSymbol != 'e' &&
+           playerSymbol != 'o' && playerSymbol != 'q' && playerSymbol != 'g' &&
+           playerSymbol != 'v') {
+      cout << "Invalid character. Please try again." << endl;
+      cin >> playerSymbol;
+    }
+  } else {
+    while (playerSymbol != 'h' && playerSymbol != 'd' && playerSymbol != 'e' &&
+           playerSymbol != 'o' && playerSymbol != 'q') {
+      cout << "Invalid character. Please try again." << endl;
+      cin >> playerSymbol;
+    }
   }
   playerSymbol = Symbol;
   displayGrid = defaultMap;
