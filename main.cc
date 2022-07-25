@@ -15,6 +15,10 @@ int main(int argc, char *argv[]) {
   bool bonus = false;
   cout << "Bonus Content? (y/n):" << endl;
   cin >> playerSymbol;
+  while (playerSymbol != 'y' && playerSymbol != 'n') {
+    cout << "Invalid input. Please enter (y) or (n):" << endl;
+    cin >> playerSymbol;
+  }
   if (playerSymbol == 'y') {
     cout << "You have chosen to play with a bonus content!" << endl;
     cout << "Bonus Content: " << endl;
@@ -31,8 +35,9 @@ int main(int argc, char *argv[]) {
   cout << "Elf (e)" << endl;
   cout << "Orc (o)" << endl;
   if (bonus) {
-    cout << "God (g)" << endl;
-    cout << "Valkarie (v)" << endl;
+    cout << "God (g) (do not need to specify directions when attacking)" << endl;
+    cout << "Magic Archer (m)" << endl;
+    cout << "Valkyrie (v) (do not need to specify directions when attacking)" << endl;
   }
   cout << "Quit (q)" << endl;
 
@@ -40,7 +45,7 @@ int main(int argc, char *argv[]) {
   if (bonus) {
     while (playerSymbol != 'h' && playerSymbol != 'd' && playerSymbol != 'e' &&
            playerSymbol != 'o' && playerSymbol != 'q' && playerSymbol != 'g' &&
-           playerSymbol != 'v') {
+           playerSymbol != 'v' && playerSymbol != 'm') {
       cout << "Invalid character. Please try again." << endl;
       cin >> playerSymbol;
     }

@@ -191,17 +191,67 @@ void Game::play() {
       }
     }
     if (input == "a") {
-      string di;
-      cin >> di;
-      for (int i = 0; i < 8; i++) {
-        if (di == movement[i]) {
-          Posn enemypos = Posn{player->getPosition().getRow() + r[i],
-                               player->getPosition().getCol() + c[i]};
+      msg = "";
+      // bonus Valkyrie and Magic Archer
+      if (bonus) {
+        if (playerSymbol == 'g') {
+          moved = true;
           for (auto en : enemies) {
-            if (enemypos == en->getPosition()) {
-              msg = player->attack(en);
+            player->attack(en);
+          }
+          msg = "You slained every enemy on the floor. ";
+        } else if (playerSymbol == 'm') {
+          string di;
+          cin >> di;
+          for (int i = 0; i < 8; i++) {
+            if (di == movement[i]) {
               moved = true;
-              break;
+              Posn enemypos = Posn{player->getPosition().getRow() + r[i],
+                                   player->getPosition().getCol() + c[i]};
+              while (displayGrid[enemypos.getRow()][enemypos.getCol()] != '-' &&
+                     displayGrid[enemypos.getRow()][enemypos.getCol()] != '|' &&
+                     displayGrid[enemypos.getRow()][enemypos.getCol()] != '+' &&
+                     displayGrid[enemypos.getRow()][enemypos.getCol()] != '#') {
+                if (displayGrid[enemypos.getRow()][enemypos.getCol()] != '.' &&
+                    displayGrid[enemypos.getRow()][enemypos.getCol()] != 'G' &&
+                    displayGrid[enemypos.getRow()][enemypos.getCol()] != 'P') {
+                  for (auto en : enemies) {
+                    if (en->getPosition() == enemypos) {
+                      msg = msg + player->attack(en);
+                      break;
+                    }
+                  }
+                }
+                enemypos = Posn{enemypos.getRow() + r[i], enemypos.getCol() + c[i]};
+              }
+            }
+          }
+        } else if (playerSymbol == 'v') {
+          moved = true;
+          for (int i = 0; i < 8; i++) {
+            Posn enemypos = Posn{player->getPosition().getRow() + r[i],
+                                 player->getPosition().getCol() + c[i]};
+            for (auto en : enemies) {
+              if (en->getPosition() == enemypos) {
+                msg = msg + player->attack(en);
+                break;
+              }
+            }
+          }
+        }
+      } else {
+        string di;
+        cin >> di;
+        for (int i = 0; i < 8; i++) {
+          if (di == movement[i]) {
+            Posn enemypos = Posn{player->getPosition().getRow() + r[i],
+                                 player->getPosition().getCol() + c[i]};
+            for (auto en : enemies) {
+              if (enemypos == en->getPosition()) {
+                msg = player->attack(en);
+                moved = true;
+                break;
+              }
             }
           }
         }
@@ -255,7 +305,7 @@ void Game::play() {
     if (player->getHP() <= 0) {
       const std::string BOLD = "\033[1m";
       const std::string RESET = "\033[0m";
-      cout << BOLD << "You died :( Your score is " << player->getGold() << endl;
+      cout << BOLD << "You died :( Your score is " << player->getGold() << RESET << endl;
       break;
     }
   }
@@ -264,30 +314,32 @@ void Game::play() {
 string Game::update() {
   string msg = "";
   // displayGrid = defaultMap;
+  for (auto en = enemies.begin(); en != enemies.end();) {
+    if ((*en)->getHP() <= 0) {
+      if ((*en)->getSymbol() == 'M') {
+        items.emplace_back(new Gold(8, (*en)->getPosition()));
+        msg = msg + "You killed the merchant and found a merchant hoard. ";
+        displayGrid[(*en)->getPosition().getRow()][(*en)->getPosition().getCol()] = 'G';
+      } else {
+        player->addGold((*en)->getGold());
+        msg = msg + "You slained " + ((*en)->getSymbol()) + " and got " +
+              to_string((*en)->getGold()) + " gold. ";
+        displayGrid[(*en)->getPosition().getRow()][(*en)->getPosition().getCol()] = '.';
+      }
+      if ((*en)->compass) {
+        items.emplace_back(new Compass((*en)->getPosition()));
+      }
+      if ((*en)->getSymbol() == 'D') {
+        (*en)->getItem()->setGuarded(false);
+      }
+      en = enemies.erase(en);
+    } else {
+      en++;
+    }
+  }
   for (auto en : enemies) {
     bool moved = false;
     bool attacked = false;
-    if (en->getHP() <= 0) {
-      if (en->getSymbol() == 'M') {
-        items.emplace_back(new Gold(8, en->getPosition()));
-        msg = "You killed the merchant and found a merchant hoard. ";
-        cout << items[items.size() - 1]->getValue() << endl;
-        displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = 'G';
-      } else {
-        player->addGold(en->getGold());
-        msg = msg + "You slained " + (en->getSymbol()) + " and got " +
-              to_string(en->getGold()) + " gold. ";
-        displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = '.';
-      }
-      if (en->compass) {
-        items.emplace_back(new Compass(en->getPosition()));
-      }
-      if (en->getSymbol() == 'D') {
-        en->getItem()->setGuarded(false);
-      }
-      enemies.erase(remove(enemies.begin(), enemies.end(), en), enemies.end());
-      continue;
-    }
     for (int i = 0; i < 8; i++) {
       Posn enemyattack = Posn{en->getPosition().getRow() + r[i], en->getPosition().getCol() + c[i]};
       if (enemyattack == player->getPosition()) {
@@ -340,6 +392,7 @@ string Game::update() {
         }
       }
     }
+    en++;
   }
   for (int i = 0; i < 8; i++) {
     if (displayGrid[player->getPosition().getRow() + r[i]][player->getPosition().getCol() + c[i]] == 'P') {
@@ -379,8 +432,14 @@ void Game::generatePlayer(char symbol) {
     player = new Dwarf(posn);
   } else if (playerSymbol == 'e') {
     player = new Elf(posn);
-  } else {
-      player = new Orc(posn);
+  } else if (playerSymbol == 'o') {
+    player = new Orc(posn);
+  } else if (playerSymbol == 'g') {
+    player = new God(posn);
+  } else if (playerSymbol == 'm') {
+    player = new MagicArcher(posn);
+  } else if (playerSymbol == 'v') {
+    player = new Valkyrie(posn);
   }
   displayGrid[posn.getRow()][posn.getCol()] = '@';
 }
@@ -471,9 +530,9 @@ void Game::print() {
   const std::string PURPLE = "\033[1;35m";
   const std::string CYAN = "\033[1;36m";
   const std::string GOLDEN = "\033[1;33m";
-  const std::string RESET =  "\033[0m";
+  const std::string RESET = "\033[0m";
   const std::string BOLD = "\033[1m";
-  
+
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
       if (displayGrid[i][j] == '@' || displayGrid[i][j] == '\\') {
@@ -495,14 +554,13 @@ void Game::print() {
     }
     cout << endl;
   }
-  cout << BOLD;
-  cout << "Race: " << player->getRace() << " Gold: " << player->getGold()
-       << "\t\t\t\t\t\tFloor: " << level << endl;
-  cout << "HP: " << max(0, player->getHP()) << endl;
-  cout << "Atk: " << player->getAtk() << endl;
-  cout << "Def: " << player->getDef() << endl;
-  cout << "Action: ";
-  cout << RESET;
+  cout << BOLD << "Race: " << RESET << player->getRace();
+  cout << BOLD << " Gold: " << RESET << player->getGold();
+  cout << BOLD << "\t\t\t\t\t\tFloor: " << RESET << level << endl;
+  cout << BOLD << "HP: " << RESET << max(0, player->getHP()) << endl;
+  cout << BOLD << "Atk: " << RESET << player->getAtk() << endl;
+  cout << BOLD << "Def: " << RESET << player->getDef() << endl;
+  cout << BOLD << "Action: " << RESET;
 }
 
 Game::~Game() {
@@ -581,7 +639,7 @@ void Game::restart() {
   items.clear();
   delete player;
   const std::string BOLD = "\033[1m";
-  const std::string RESET =  "\033[0m";
+  const std::string RESET = "\033[0m";
   cout << BOLD;
   cout << "Welcome to CC3K!" << endl;
   cout << "Please choose your character:" << endl;
@@ -591,14 +649,15 @@ void Game::restart() {
   cout << "Orc (o)" << endl;
   if (bonus) {
     cout << "God (g)" << endl;
-    cout << "Valkarie (v)" << endl;
+    cout << "Magic Archer (m)" << endl;
+    cout << "Valkyrie (v)" << endl;
   }
   char Symbol;
   cin >> Symbol;
   if (bonus) {
     while (playerSymbol != 'h' && playerSymbol != 'd' && playerSymbol != 'e' &&
            playerSymbol != 'o' && playerSymbol != 'q' && playerSymbol != 'g' &&
-           playerSymbol != 'v') {
+           playerSymbol != 'v' && playerSymbol != 'm') {
       cout << "Invalid character. Please try again." << endl;
       cin >> playerSymbol;
     }

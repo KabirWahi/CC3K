@@ -2,6 +2,9 @@
 #include "dwarf.h"
 #include "elf.h"
 #include "orc.h"
+#include "god.h"
+#include "magicarcher.h"
+#include "valkyrie.h"
 
 
 #include "dragon.h"
