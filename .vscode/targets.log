@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Jul 24 22:57:42 2022
+# Make data base, printed on Mon Jul 25 14:13:32 2022
 
 # Variables
 
@@ -33,7 +33,7 @@ MAKE_COMMAND := make.exe
 # automatic
 @D = $(patsubst %/,%,$(patsubst %\,%,$(dir $@)))
 # environment
-CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_17768_SZHEWNAZSDMCHWGC
+CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_11332_WMJLKJUOJUNKSURW
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
@@ -65,7 +65,7 @@ CURDIR := c:/Users/kabir/Desktop/Uni Notes/2A/CS246/final project/CC3K
 # makefile (from 'Makefile', line 4)
 DEPENDS = ${OBJECTS:.o=.d}
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # automatic
 *D = $(patsubst %/,%,$(patsubst %\,%,$(dir $*)))
 # environment
@@ -83,7 +83,7 @@ MAKEFILE_LIST := Makefile
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 17768
+VSCODE_PID = 11332
 # automatic
 ?D = $(patsubst %/,%,$(patsubst %\,%,$(dir $?)))
 # environment
@@ -145,7 +145,7 @@ PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 # makefile (from 'Makefile', line 3)
-OBJECTS = main.o game.o character.o player.o enemy.o human.o vampire.o dragon.o troll.o merchant.o phoenix.o werewolf.o goblin.o item.o potion.o gold.o dragonhoard.o barriersuit.o buff.o atkbuff.o defbuff.o compass.o dwarf.o elf.o mapDetection.o orc.o randoms.o
+OBJECTS = main.o game.o character.o player.o enemy.o human.o vampire.o dragon.o troll.o merchant.o phoenix.o werewolf.o goblin.o item.o potion.o gold.o dragonhoard.o barriersuit.o buff.o atkbuff.o defbuff.o compass.o dwarf.o elf.o mapDetection.o orc.o randoms.o god.o magicarcher.o valkyrie.o
 # environment
 USERDOMAIN = MSI
 # 'override' directive
@@ -209,15 +209,21 @@ PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 165 Stepping 2, GenuineIntel
 
 # Directories
 
-# . (key c:/Users/kabir/Desktop/Uni Notes/2A/CS246/final project/CC3K, mtime 1658717857): 61 files, no impossibilities.
+# . (key c:/Users/kabir/Desktop/Uni Notes/2A/CS246/final project/CC3K, mtime 1658772806): 68 files, no impossibilities.
 
-# 61 files, no impossibilities in 1 directories.
+# 68 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
 # No implicit rules.
 
 # Files
+
+# Not a target:
+valkyrie.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 werewolf.d:
@@ -308,7 +314,7 @@ dragon.o:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-24 22:57:25
+#  Last modified 2022-07-25 14:13:28
 #  File has been updated.
 #  Successfully updated.
 
@@ -365,6 +371,19 @@ clean:
 	rm ${DEPENDS} ${OBJECTS} ${EXEC}
 
 # Not a target:
+magicarcher.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+magicarcher.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
 human.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -394,7 +413,20 @@ merchant.o:
 #  Modification time never checked.
 #  File has not been updated.
 
-cc3k: main.o game.o character.o player.o enemy.o human.o vampire.o dragon.o troll.o merchant.o phoenix.o werewolf.o goblin.o item.o potion.o gold.o dragonhoard.o barriersuit.o buff.o atkbuff.o defbuff.o compass.o dwarf.o elf.o mapDetection.o orc.o randoms.o
+# Not a target:
+god.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+valkyrie.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+cc3k: main.o game.o character.o player.o enemy.o human.o vampire.o dragon.o troll.o merchant.o phoenix.o werewolf.o goblin.o item.o potion.o gold.o dragonhoard.o barriersuit.o buff.o atkbuff.o defbuff.o compass.o dwarf.o elf.o mapDetection.o orc.o randoms.o god.o magicarcher.o valkyrie.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -565,6 +597,13 @@ buff.o:
 #  File has not been updated.
 
 # Not a target:
+god.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
 gold.d:
 #  Implicit rule search has been done.
 #  File does not exist.
@@ -605,19 +644,19 @@ werewolf.o:
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=60/1024=6%, Rehash=0, Collisions=3/124=2%
+# Load=66/1024=6%, Rehash=0, Collisions=3/136=2%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 120 / storage = 1121 B / avg = 9 B
-# current buf: size = 8162 B / used = 1121 B / count = 120 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 133 / storage = 1257 B / avg = 9 B
+# current buf: size = 8162 B / used = 1257 B / count = 133 / avg = 9 B
 
-# strcache performance: lookups = 153 / hit rate = 21%
+# strcache performance: lookups = 169 / hit rate = 21%
 # hash-table stats:
-# Load=120/8192=1%, Rehash=0, Collisions=1/153=1%
-# Finished Make data base on Sun Jul 24 22:57:42 2022
+# Load=133/8192=2%, Rehash=0, Collisions=1/169=1%
+# Finished Make data base on Mon Jul 25 14:13:32 2022
 
  

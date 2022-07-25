@@ -3,8 +3,6 @@
 #include "player.h"
 
 class MagicArcher : public Player {
- protected:
-  int maxHP = 140;
  public:
   MagicArcher(Posn p);
 };

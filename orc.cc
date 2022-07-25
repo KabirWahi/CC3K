@@ -3,6 +3,7 @@
 using namespace std;
 
 Orc::Orc(Posn p) {
+  maxHP = 180;
   atk = 30;
   def = 25;
   HP = maxHP;

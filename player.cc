@@ -11,7 +11,7 @@ bool Player::hasBarrier() const { return barrier; }
 
 void Player::addGold(int amount) { gold += amount; }
 
-void Player::addHealth(int amount) { setHP(min(getHP() + amount, maxHP)); }
+void Player::addHealth(int amount) { HP = min(HP + amount, maxHP); }
 
 string Player::attack(Character* target) {
   int damage = ceil(double(100) / double(100 + target->getDef()) * getAtk());
@@ -28,6 +28,7 @@ std::string Player::usePotion(Item* item) {
   string msg = "";
   if (item->getId() == 0 || item->getId() == 3) {
     addHealth(item->getValue());
+    cout << maxHP << endl;
     if (item->getId() == 0) {
       msg = "PC picked up a RH potion. ";
     } else {

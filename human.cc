@@ -4,6 +4,7 @@
 using namespace std;
 
 Human::Human(Posn p) {
+  maxHP = 140;
   atk = 20;
   def = 20;
   maxHP = 140;

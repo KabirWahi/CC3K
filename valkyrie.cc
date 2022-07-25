@@ -4,8 +4,9 @@
 using namespace std;
 
 Valkyrie::Valkyrie(Posn p) {
-  atk = 40;
-  def = 40;
+  maxHP = 180;
+  atk = 35;
+  def = 25;
   HP = maxHP;
   gold = 0;
   position = p;

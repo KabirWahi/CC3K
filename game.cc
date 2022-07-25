@@ -588,7 +588,7 @@ void Game::generateItems() {
       posn = randomPosn(chamber);
     }
     int type = randomNum(6);  // 0 - RH, 1 - BA, 2 - BD, 3 - PH, 4 - WA, 5 - WD
-    items.emplace_back(new Potion(type, posn));
+    items.emplace_back(new Potion(0, posn));
     displayGrid[posn.getRow()][posn.getCol()] = 'P';
   }
   int numGolds = 10;

@@ -5,6 +5,7 @@
 using namespace std;
 
 Elf::Elf(Posn p) {
+  maxHP = 140;
   atk = 30;
   def = 10;
   HP = maxHP;
