@@ -16,22 +16,9 @@
 using namespace std;
 
 const string movement[8] = {"no", "so", "ea", "we", "ne", "nw", "se", "sw"};
-const int r[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
-const int c[8] = {0, 0, 1, -1, 1, -1, 1, -1};
 const string directions[8] = {"North", "South", "East",
                               "West", "Northeast", "Northwest",
                               "Southeast", "Southwest"};
-
-int randomNum(int upperBound) {
-  std::vector<int> v;
-  for (int i = 0; i < upperBound; i++) {
-    v.push_back(i);
-  }
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::default_random_engine rng{seed};
-  std::shuffle(v.begin(), v.end(), rng);
-  return v[0];
-}
 
 void Game::changeMap(string filename) {
   ifstream file(filename);
@@ -142,7 +129,7 @@ void Game::play() {
           displayGrid[player->getPosition().getRow()][player->getPosition().getCol()] = '@';
           if (player->getPosition() == stairPosition) {
             if (level == 5) {
-              cout << "congratulations! You have reached the end of the dungeon." << endl;
+              cout << "Congratulations! You have reached the end of the dungeon." << endl;
               cout << "Your score is " << player->getGold() << "." << endl;
               return;
             }
@@ -212,15 +199,8 @@ void Game::play() {
                                player->getPosition().getCol() + c[i]};
           for (auto en : enemies) {
             if (enemypos == en->getPosition()) {
-              int oldHP = en->getHP();
-              player->attack(en);
-              int damage = oldHP - en->getHP();
-              msg = "PC deals " + to_string(damage) + " damage to " +
-                    en->getSymbol() + " (" + to_string(max(0, en->getHP())) + " HP). ";
+              msg = player->attack(en);
               moved = true;
-              if (en->getSymbol() == 'M') {
-                en->setHostile();
-              }
               break;
             }
           }
@@ -327,56 +307,11 @@ string Game::update() {
       continue;
     }
     for (int i = 0; i < 8; i++) {
-      Posn enemyattack =
-          Posn{en->getPosition().getRow() + r[i], en->getPosition().getCol() + c[i]};
+      Posn enemyattack = Posn{en->getPosition().getRow() + r[i], en->getPosition().getCol() + c[i]};
       if (enemyattack == player->getPosition()) {
-        if (en->getSymbol() == 'D') {
-          for (int j = 0; j < 8; j++) {
-            if (en->getItem()->getPosition().getRow() == player->getPosition().getRow() + r[j] &&
-                en->getItem()->getPosition().getCol() == player->getPosition().getCol() + c[j]) {
-              int hit = randomNum(2);
-              if (hit == 1) {
-                int oldHP = player->getHP();
-                en->attack(player);
-                if (oldHP != player->getHP()) {
-                  int damage = oldHP - player->getHP();
-                  msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
-                }
-              } else {
-                msg = msg + en->getSymbol() + " missed. ";
-              }
-              attacked = true;
-            }
-          }
-        } else if (en->getSymbol() == 'M') {
-          if (en->isHostile()) {
-            int hit = randomNum(2);
-            if (hit == 1) {
-              int oldHP = player->getHP();
-              en->attack(player);
-              if (oldHP != player->getHP()) {
-                int damage = oldHP - player->getHP();
-                msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
-              }
-            } else {
-              msg = msg + en->getSymbol() + " missed. ";
-            }
-            attacked = true;
-          }
-        } else {
-          int hit = randomNum(2);
-          if (hit == 1) {
-            int oldHP = player->getHP();
-            en->attack(player);
-            if (oldHP != player->getHP()) {
-              int damage = oldHP - player->getHP();
-              msg = msg + en->getSymbol() + " deals " + to_string(damage) + " damage to PC. ";
-            }
-          } else {
-            msg = msg + en->getSymbol() + " missed. ";
-          }
-          attacked = true;
-        }
+        msg = msg + en->attack(player);
+        attacked = true;
+        break;
       }
     }
     if (attacked) {
@@ -430,20 +365,7 @@ string Game::update() {
         if (it->getPosition().getRow() == player->getPosition().getRow() + r[i] &&
             it->getPosition().getCol() == player->getPosition().getCol() + c[i] && it->getSymbol() == 'P') {
           if (player->getknownPotions(it->getId())) {
-            msg = msg + "PC sees a ";
-            if (it->getId() == 0) {
-              msg = msg + "RH potion. ";
-            } else if (it->getId() == 1) {
-              msg = msg + "BA potion. ";
-            } else if (it->getId() == 2) {
-              msg = msg + "BD potion. ";
-            } else if (it->getId() == 3) {
-              msg = msg + "PH potion. ";
-            } else if (it->getId() == 4) {
-              msg = msg + "WA potion. ";
-            } else if (it->getId() == 5) {
-              msg = msg + "WD potion. ";
-            }
+            msg = msg + "PC sees a " + it->getName() + " potion. ";
           } else {
             msg = msg + "PC sees an unknown potion. ";
           }

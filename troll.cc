@@ -14,14 +14,6 @@ Troll::Troll(Posn p) {
   race = "Troll";
 }
 
-void Troll::attack(Character *target) {
-  int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
-  if (target->hasBarrier()) {
-    damage = ceil(double(damage) / double(2));
-  }
-  target->setHP(target->getHP() - damage);
-}
-
 int Troll::getAtk() { return atk; }
 
 int Troll::getDef() { return def; }

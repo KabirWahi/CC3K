@@ -15,7 +15,7 @@ class Player : public Character {
   virtual bool getknownPotions(int index);
   virtual void addGold(int amount);
   virtual void addHealth(int amount);
-  virtual void attack(Character *target);
+  virtual std::string attack(Character *target) override;
   virtual bool hasBarrier() const override;
   virtual void toggleBarrier();
   virtual ~Player();

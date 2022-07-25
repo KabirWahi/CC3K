@@ -8,7 +8,7 @@ class Dragon : public Enemy {
    Item *guarding;
  public:
   Dragon(Posn p, Item *i);
-  void attack(Character *target) override;
+  std::string attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
   Item * getItem() override;

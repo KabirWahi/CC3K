@@ -16,8 +16,8 @@ int Buff::getDef() {
   return player->getDef();
 }
 
-void Buff::attack(Character* target) {
-  player->attack(target);
+std::string Buff::attack(Character* target) {
+  return player->attack(target);
 }
 
 void Buff::addGold(int amount) {

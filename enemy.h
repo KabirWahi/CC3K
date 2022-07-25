@@ -6,7 +6,7 @@
 class Enemy : public Character {
  public:
   bool compass = false;
-  virtual void attack(Character *target) = 0;
+  virtual std::string attack(Character *target);
   virtual int getAtk() = 0;
   virtual int getDef() = 0;
   virtual Item * getItem() = 0;

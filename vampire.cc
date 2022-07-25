@@ -14,12 +14,20 @@ Vampire::Vampire(Posn p) {
   race = "Vampire";
 }
 
-void Vampire::attack(Character *target) {
-  int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
-  if (target->hasBarrier()) {
-    damage = ceil(double(damage) / double(2));
+string Vampire::attack(Character *target) {
+  int hit = randomNum(2);
+  string msg = "";
+  if (hit == 1) {
+    int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
+    if (target->hasBarrier()) {
+      damage = ceil(double(damage) / double(2));
+    }
+    target->setHP(target->getHP() - damage);
+    msg = msg + symbol + " deals " + to_string(damage) + " damage to PC. " + symbol + " has lifesteal and healed " + to_string(damage / 5) + " HP. ";
+  } else {
+    msg = msg + symbol + " missed. ";
   }
-  target->setHP(target->getHP() - damage);
+  return msg;
 }
 
 int Vampire::getAtk() { return atk; }

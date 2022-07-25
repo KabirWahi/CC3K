@@ -15,7 +15,7 @@ class Buff : public Player {
   virtual ~Buff();
   int getAtk() override;
   int getDef() override;
-  void attack(Character* target) override;
+  std::string attack(Character* target) override;
   void addGold(int amount) override;
   void addHealth(int amount) override;
   bool hasBarrier() const override;

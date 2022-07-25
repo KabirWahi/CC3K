@@ -14,14 +14,6 @@ Werewolf::Werewolf(Posn p) {
   race = "Werewolf";
 }
 
-void Werewolf::attack(Character *target) {
-  int damage = ceil(double(100) / double(100 + target->getDef()) * atk);
-  if (target->hasBarrier()) {
-    damage = ceil(double(damage) / double(2));
-  }
-  target->setHP(target->getHP() - damage);
-}
-
 int Werewolf::getAtk() { return atk; }
 
 int Werewolf::getDef() { return def; }

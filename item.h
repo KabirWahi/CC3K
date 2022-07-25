@@ -1,6 +1,7 @@
 #ifndef ITEM_H
 #define ITEM_H
 #include "posn.h"
+#include <string>
 
 class Item {
     protected:
@@ -9,6 +10,7 @@ class Item {
     int value;  
     bool guarded;
     char symbol;
+    std::string name;
 
     public:
     Item(int id, Posn position);
@@ -17,6 +19,7 @@ class Item {
     Posn getPosition(); // return position
     int getValue(); // return value
     int getId(); // return id
+    std::string getName(); // return name
     bool isGuarded(); // for a DragonHoard/BarrierSuit, if it is guarded by a dragon
     virtual void setGuarded(bool value); // for a DragonHoard/BarrierSuit, set false if the dragon is dead
 

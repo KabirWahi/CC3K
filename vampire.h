@@ -5,7 +5,7 @@
 class Vampire : public Enemy {
  public:
   Vampire(Posn p);
-  void attack(Character *target) override;
+  std::string attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
   Item *getItem() override { return nullptr; };

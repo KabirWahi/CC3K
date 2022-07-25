@@ -8,11 +8,12 @@ class Merchant : public Enemy {
 
  public:
   Merchant(Posn p);
-  void attack(Character *target) override;
   bool isHostile() override;
   void setHostile() override;
+  std::string attack(Character *target) override;
   int getAtk() override;
   int getDef() override;
+  void setHP(int HP) override;
   Item *getItem() override { return nullptr; };
 };
 

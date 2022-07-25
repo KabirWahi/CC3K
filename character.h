@@ -5,6 +5,10 @@
 #include <string>
 
 #include "posn.h"
+#include "randoms.h"
+
+const int r[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
+const int c[8] = {0, 0, 1, -1, 1, -1, 1, -1};
 
 class Character {
  protected:
@@ -26,7 +30,7 @@ class Character {
   virtual char getSymbol();                    // return symbol
   virtual std::string getRace();               // return race
   virtual void setPosition(Posn position);     // set position
-  virtual void attack(Character *target) = 0;  // attack target
+  virtual std::string attack(Character *target) = 0;  // attack target
   virtual void setHP(int HP);                  // set HP
   virtual void setGold(int gold);              // set gold
   virtual void setAtk(int atk);                // set atk

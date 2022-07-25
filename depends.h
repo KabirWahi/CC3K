@@ -23,3 +23,4 @@
 #include "atkbuff.h"
 
 #include "mapDetection.h"
+#include "randoms.h"

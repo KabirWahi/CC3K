@@ -1,6 +1,8 @@
 #include "item.h"
 #include "posn.h"
 
+using namespace std;
+
 Item::Item(int id, Posn position): id{id}, position{position}, value{0}, guarded{false} {}
 
 Item::~Item() {}
@@ -19,6 +21,10 @@ int Item::getValue() {
 
 int Item::getId() {
     return id;
+}
+
+string Item::getName() {
+    return name;
 }
     
 bool Item::isGuarded() {
