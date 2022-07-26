@@ -333,7 +333,7 @@ void Game::play() {
     if (player->getHP() <= 0) {
       const std::string BOLD = "\033[1m";
       const std::string RESET = "\033[0m";
-      cout << BOLD << "You died :( Your score is " << player->getGold() << RESET << endl;
+      cout << BOLD << "You died :( Your score is " << player->getGold() << ". " << RESET << endl;
       break;
     }
   }
