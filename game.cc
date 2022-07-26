@@ -397,17 +397,31 @@ string Game::update() {
           if (en->getSymbol() == 'D') {
             bool correctMovement = false;
             for (int i = 0; i < 8; i++) {
-              if (en->getItem()->getPosition().getRow() + r[i] == en->getPosition().getRow() + r[di] &&
-                  en->getItem()->getPosition().getCol() + c[i] == en->getPosition().getCol() + c[di]) {
+              for (int j = 0; j < 8; j++) {
+                if (en->getItem()->getPosition().getRow() + r[i] == en->getPosition().getRow() + r[j] &&
+                    en->getItem()->getPosition().getCol() + c[i] == en->getPosition().getCol() + c[j] &&
+                    displayGrid[en->getPosition().getRow() + r[j]][en->getPosition().getCol() + c[j]] == '.') {
                 correctMovement = true;
                 break;
               }
+              }
             }
             if (correctMovement) {
-              displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = '.';
-              en->setPosition(Posn{en->getPosition().getRow() + r[di], en->getPosition().getCol() + c[di]});
-              displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = en->getSymbol();
-              moved = true;
+              while (!moved) {
+                di = randomNum(8);
+                if (displayGrid[en->getPosition().getRow() + r[di]][en->getPosition().getCol() + c[di]] == '.') {
+                  for (int i = 0; i < 8; i++) {
+                    if (en->getItem()->getPosition().getRow() + r[i] == en->getPosition().getRow() + r[di] &&
+                        en->getItem()->getPosition().getCol() + c[i] == en->getPosition().getCol() + c[di]) {
+                      moved = true;
+                      displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = '.';
+                      en->setPosition(Posn{en->getPosition().getRow() + r[di], en->getPosition().getCol() + c[di]});
+                      displayGrid[en->getPosition().getRow()][en->getPosition().getCol()] = en->getSymbol();
+                      break;
+                    }
+                  }
+                }
+              }
             } else {
               moved = true;
             }
