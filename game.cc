@@ -152,7 +152,9 @@ void Game::play() {
                 msg = "You moved " + directions[i] + " and picked up " +
                       to_string(it->getValue()) + " gold. ";
                 displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
+                Item *temp = it;
                 items.erase(remove(items.begin(), items.end(), it), items.end());
+                delete temp;
                 break;
               }
             }
@@ -165,7 +167,9 @@ void Game::play() {
           stairVisible = true;
           for (auto it : items) {
             if (it->getPosition() == player->getPosition()) {
+              Item *temp = it;
               items.erase(remove(items.begin(), items.end(), it), items.end());
+              delete temp;
               break;
             }
           }
@@ -182,7 +186,9 @@ void Game::play() {
                 player->toggleBarrier();
                 msg = "You moved " + directions[i] + " and picked up the barrier. ";
                 displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
+                Item *temp = it;
                 items.erase(remove(items.begin(), items.end(), it), items.end());
+                delete temp;
                 break;
               }
             }
@@ -200,7 +206,9 @@ void Game::play() {
                 }
                 msg = "You moved " + directions[i] + " and picked up the Potion Book. ";
                 displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
+                Item *temp = it;
                 items.erase(remove(items.begin(), items.end(), it), items.end());
+                delete temp;
                 break;
               }
             }
@@ -284,6 +292,7 @@ void Game::play() {
                                 player->getPosition().getCol() + c[i]};
           for (auto it : items) {
             if (potionpos == it->getPosition() && it->getSymbol() == 'P') {
+              moved = true;
               msg = player->usePotion(it);
               if (it->getId() == 1 || it->getId() == 4) {
                 player = new AtkBuff(player, it->getName());
@@ -293,8 +302,9 @@ void Game::play() {
               }
               player->toggleknownPotions(it->getId());
               displayGrid[it->getPosition().getRow()][it->getPosition().getCol()] = '.';
+              Item *temp = it;
               items.erase(remove(items.begin(), items.end(), it), items.end());
-              moved = true;
+              delete temp;
               break;
             }
           }
@@ -350,7 +360,9 @@ string Game::update() {
       if ((*en)->getSymbol() == 'D') {
         (*en)->getItem()->setGuarded(false);
       }
-      en = enemies.erase(en);
+      Enemy *temp = *en;
+      enemies.erase(en);
+      delete temp;
     } else {
       en++;
     }
