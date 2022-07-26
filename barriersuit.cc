@@ -6,4 +6,3 @@ BarrierSuit::BarrierSuit(Posn position): Item{10, position} {
 }
 
 BarrierSuit::~BarrierSuit() {}
-

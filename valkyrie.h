@@ -9,4 +9,3 @@ class Valkyrie : public Player {
 
 
 #endif // VALKYRIE_H
-
